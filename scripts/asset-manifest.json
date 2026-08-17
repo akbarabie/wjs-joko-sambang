@@ -1,0 +1,341 @@
+{
+  "_readme": "Satu-satunya sumber data daftar aset foto. generate-placeholders.py dan ASSET_CHECKLIST.md sama-sama dibuat dari file ini, supaya tidak ada data yang tertulis dua kali dan berpotensi tidak sinkron.",
+  "assets": [
+    {
+      "category": "hero",
+      "filename": "gbr 1.jpeg",
+      "width": 1920,
+      "height": 1080,
+      "label": "Hero utama - Pemandangan pegunungan Kota Batu dari WJS Joko Sambang Café",
+      "usedIn": "Home - Hero Section (background slider/video, slide 1)"
+    },
+    {
+      "category": "hero",
+      "filename": "gbr 2.JPG",
+      "width": 1920,
+      "height": 1080,
+      "label": "Hero alternatif - suasana interior cafe malam hari, lampu hangat",
+      "usedIn": "Home - Hero Section (background slider/video, slide 2)"
+    },
+    {
+      "category": "hero",
+      "filename": "gbr 4.jpg",
+      "width": 1920,
+      "height": 1080,
+      "label": "Hero alternatif - Suasana interior Bartender WJS Joko Sambang Café",
+      "usedIn": "Home - Hero Section (background slider/video, slide 3)"
+    },
+    {
+      "category": "hero",
+      "filename": "gbr 5.JPG",
+      "width": 1920,
+      "height": 1080,
+      "label": "Hero alternatif - Suasana eksterior WJS Joko Sambang Café",
+      "usedIn": "Home - Hero Section (background slider/video, slide 4)"
+    },
+    {
+      "category": "hero",
+      "filename": "gbr 10.JPG",
+      "width": 1920,
+      "height": 1080,
+      "label": "Hero alternatif - Suasana Joglp WJS Joko Sambang Café",
+      "usedIn": "Home - Hero Section (background slider/video, slide 5)"
+    },
+    {
+      "category": "hero",
+      "filename": "gbr 9.jpeg",
+      "width": 1920,
+      "height": 1080,
+      "label": "Hero alternatif - Suasana kolom ikan WJS Joko Sambang Café",
+      "usedIn": "Home - Hero Section (background slider/video, slide 6)"
+    },
+    {
+      "category": "hero",
+      "filename": "gbr 6.jpg",
+      "width": 1920,
+      "height": 1080,
+      "label": "Hero alternatif - Suasana interior VIP WJS Joko Sambang Café",
+      "usedIn": "Home - Hero Section (background slider/video, slide 7)"
+    },
+    {
+      "category": "about",
+      "filename": "gbr 1.jpeg",
+      "width": 1200,
+      "height": 1500,
+      "label": "Gedung WJS Joko Sambang tampak luar dengan pohon kelapa (foto siang hari)",
+      "usedIn": "About Us - Story & Concept section"
+    },
+    {
+      "category": "about",
+      "filename": "gbr 3.png",
+      "width": 1200,
+      "height": 900,
+      "label": "Arti makna logo WJS Joko Sambang",
+      "usedIn": "About Us - Story & Concept section"
+    },
+    {
+      "category": "about",
+      "filename": "gbr 2.jpeg",
+      "width": 1200,
+      "height": 900,
+      "label": "Momen keramahan staf/owner melayani tamu di area indoor",
+      "usedIn": "About Us - Story & Concept section"
+    },
+    {
+      "category": "about",
+      "filename": "gbr 4.jpeg",
+      "width": 1200,
+      "height": 900,
+      "label": "Dokumentasi kunjungan Bapak Wali Kota Batu saat Grand Opening",
+      "usedIn": "About Us - Special Highlights / Milestones"
+    },
+    {
+      "category": "about",
+      "filename": "gbr 5.jpeg",
+      "width": 1200,
+      "height": 900,
+      "label": "Dokumentasi kunjungan tokoh WJS Joko Sambang Café",
+      "usedIn": "About Us - Special Highlights / Milestones"
+    },
+        {
+      "category": "about",
+      "filename": "gbr 6.jpeg",
+      "width": 1200,
+      "height": 900,
+      "label": "Dokumentasi Owner di WJS Joko Sambang Café",
+      "usedIn": "About Us - Special Highlights / Milestones"
+    },
+    {
+      "category": "menu",
+      "filename": "menu-nasi-goreng-rawon.jpeg",
+      "width": 900,
+      "height": 900,
+      "label": "Nasi Goreng Rawon dengan beef saikoro, acar, dan kerupuk",
+      "usedIn": "Home preview grid + Menu page (Main Course, Best Seller)"
+    },
+    {
+      "category": "menu",
+      "filename": "menu-beef-krengseng.jpeg",
+      "width": 900,
+      "height": 900,
+      "label": "Beef Krengseng daun jeruk dengan nasi, krispi kentang, kangkung krispi",
+      "usedIn": "Home preview grid + Menu page (Main Course, Best Seller)"
+    },
+    {
+      "category": "menu",
+      "filename": "menu-ayam-bakar-taliwang.jpeg",
+      "width": 900,
+      "height": 900,
+      "label": "Ayam Bakar Taliwang dengan sambal plencing dan lalapan",
+      "usedIn": "Home preview grid + Menu page (Main Course, Best Seller)"
+    },
+    {
+      "category": "menu",
+      "filename": "menu-vit-joko-sambang.jpeg",
+      "width": 900,
+      "height": 900,
+      "label": "Vit Joko Sambang - carrot, orange juice, ginger, ice cube",
+      "usedIn": "Home preview grid + Menu page (Signature Drinks, Best Seller)"
+    },
+    {
+      "category": "menu",
+      "filename": "menu-antioxidant.jpeg",
+      "width": 900,
+      "height": 900,
+      "label": "Antioxidant - klorofil kangkung, coconut water, pineapple juice",
+      "usedIn": "Home preview grid + Menu page (Signature Drinks, Best Seller)"
+    },
+    {
+      "category": "menu",
+      "filename": "menu-jamu-gula-asem.jpeg",
+      "width": 900,
+      "height": 900,
+      "label": "Jamu Gula Asem - beras kencur, temulawak, kunir asem",
+      "usedIn": "Home preview grid + Menu page (Signature Drinks, Best Seller)"
+    },
+    {
+      "category": "facilities",
+      "filename": "facility-indoor-1.jpg",
+      "width": 1200,
+      "height": 800,
+      "label": "Area indoor - kursi merah dekat jendela besar (sudut 1)",
+      "usedIn": "Facilities page - Public Area / Indoor Space"
+    },
+    {
+      "category": "facilities",
+      "filename": "facility-indoor-2.jpg",
+      "width": 1200,
+      "height": 800,
+      "label": "Area indoor - lantai catur hitam putih dengan meja bundar",
+      "usedIn": "Facilities page - Public Area / Indoor Space"
+    },
+    {
+      "category": "facilities",
+      "filename": "facility-indoor-3.jpg",
+      "width": 1200,
+      "height": 800,
+      "label": "Area indoor - sofa coklat dengan jendela panorama kebun",
+      "usedIn": "Facilities page - Public Area / Indoor Space"
+    },
+    {
+      "category": "facilities",
+      "filename": "facility-outdoor-1.jpeg",
+      "width": 1200,
+      "height": 800,
+      "label": "Area outdoor - kursi rotan bulat dengan gapura kayu ukir Jawa",
+      "usedIn": "Facilities page - Public Area / Outdoor Space"
+    },
+    {
+      "category": "facilities",
+      "filename": "facility-outdoor-2.jpg",
+      "width": 1200,
+      "height": 800,
+      "label": "Area outdoor - sofa rotan kuning dengan tanaman hijau rimbun",
+      "usedIn": "Facilities page - Public Area / Outdoor Space"
+    },
+    {
+      "category": "facilities",
+      "filename": "facility-outdoor-3.jpg",
+      "width": 1200,
+      "height": 800,
+      "label": "Area outdoor - rooftop dengan pagar kaca menghadap kebun",
+      "usedIn": "Facilities page - Public Area / Outdoor Space"
+    },
+    {
+      "category": "facilities",
+      "filename": "facility-vip-room.jpeg",
+      "width": 1200,
+      "height": 800,
+      "label": "Room VIP/Meeting - meja kayu panjang, lengkap dengan lukisan dinding",
+      "usedIn": "Facilities page - VIP & Event Space"
+    },
+    {
+      "category": "facilities",
+      "filename": "facility-event-space.jpg",
+      "width": 1200,
+      "height": 800,
+      "label": "Event space - suasana acara Beauty Class di ruang dengan jendela kayu",
+      "usedIn": "Facilities page - VIP & Event Space"
+    },
+    {
+      "category": "facilities",
+      "filename": "facility-live-music.JPG",
+      "width": 1200,
+      "height": 800,
+      "label": "Panggung live music malam hari dengan penyanyi dan lighting hangat",
+      "usedIn": "Facilities page - Additional Services"
+    },
+    {
+      "category": "facilities",
+      "filename": "facility-venue-1.jpg",
+      "width": 1200,
+      "height": 800,
+      "label": "Venue - ruang lounge dengan sofa krem dan meja kayu solid",
+      "usedIn": "Facilities page - Venue"
+    },
+    {
+      "category": "facilities",
+      "filename": "facility-venue-2.jpg",
+      "width": 1200,
+      "height": 800,
+      "label": "Venue - jalan setapak taman bertingkat ala terasering",
+      "usedIn": "Facilities page - Venue"
+    },
+    {
+      "category": "facilities",
+      "filename": "facility-venue-3.jpg",
+      "width": 1200,
+      "height": 800,
+      "label": "Venue - pemandangan kebun luas dari balkon kaca",
+      "usedIn": "Facilities page - Venue"
+    },
+    {
+      "category": "events",
+      "filename": "event-beauty-class-1.jpeg",
+      "width": 1200,
+      "height": 900,
+      "label": "Beauty Class Wardah x WJS Joko Sambang - sesi make up bersama",
+      "usedIn": "Gallery page - Event Collaboration Showcase"
+    },
+    {
+      "category": "events",
+      "filename": "event-beauty-class-2.jpeg",
+      "width": 1200,
+      "height": 900,
+      "label": "Beauty Class Wardah x WJS Joko Sambang - suasana peserta di meja",
+      "usedIn": "Gallery page - Event Collaboration Showcase"
+    },
+    {
+      "category": "events",
+      "filename": "event-pemuda-pemudi-1.jpeg",
+      "width": 1200,
+      "height": 900,
+      "label": "Meeting & Gathering Pemuda Pemudi - diskusi santai di meja kayu",
+      "usedIn": "Gallery page - Event Collaboration Showcase"
+    },
+    {
+      "category": "events",
+      "filename": "gbr 4.jpeg",
+      "width": 1200,
+      "height": 900,
+      "label": "Kunjungan Bapak Wali Kota Batu saat Grand Opening",
+      "usedIn": "Gallery page - Event Collaboration Showcase"
+    },
+    {
+      "category": "gallery",
+      "filename": "gallery-01.jpg",
+      "width": 1000,
+      "height": 1250,
+      "label": "Foto galeri bebas - suasana ruangan / kegiatan pengunjung (portrait)",
+      "usedIn": "Gallery page - Photo Gallery (masonry)"
+    },
+    {
+      "category": "gallery",
+      "filename": "gallery-02.jpg",
+      "width": 1200,
+      "height": 800,
+      "label": "Foto galeri bebas - suasana ruangan / kegiatan pengunjung (landscape)",
+      "usedIn": "Gallery page - Photo Gallery (masonry)"
+    },
+    {
+      "category": "gallery",
+      "filename": "gallery-03.jpg",
+      "width": 1000,
+      "height": 1250,
+      "label": "Foto galeri bebas - keasrian taman (portrait)",
+      "usedIn": "Gallery page - Photo Gallery (masonry)"
+    },
+    {
+      "category": "gallery",
+      "filename": "gallery-04.jpg",
+      "width": 1200,
+      "height": 900,
+      "label": "Foto galeri bebas - detail menu / meja saji",
+      "usedIn": "Gallery page - Photo Gallery (masonry)"
+    },
+    {
+      "category": "gallery",
+      "filename": "gallery-05.jpg",
+      "width": 1000,
+      "height": 1250,
+      "label": "Foto galeri bebas - kegiatan pengunjung (portrait)",
+      "usedIn": "Gallery page - Photo Gallery (masonry)"
+    },
+    {
+      "category": "gallery",
+      "filename": "gallery-06.jpg",
+      "width": 1200,
+      "height": 800,
+      "label": "Foto galeri bebas - suasana outdoor sore hari",
+      "usedIn": "Gallery page - Photo Gallery (masonry)"
+    },
+    {
+      "category": "logo",
+      "filename": "wjs-logo.png",
+      "width": 512,
+      "height": 512,
+      "label": "PENTING: logo resmi WJS Joko Sambang dengan latar transparan (PNG/SVG). Belum ada versi bersih di file PDF, hanya menyatu dengan foto cover.",
+      "usedIn": "Navbar, Footer, favicon, dan seluruh brand mark"
+    }
+  ]
+}

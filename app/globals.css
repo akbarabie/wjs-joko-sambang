@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+/*
+  Design tokens WJS Joko Sambang Café.
+  Sumber warna dasar: PRD section 5.2 (Visual & Color Palette).
+  Skala 50-950 di-generate dari warna dasar PRD supaya ada varian untuk
+  hover state, border tipis, dan background lembut tanpa perlu menebak
+  hex baru tiap kali butuh nuansa yang lebih terang/gelap.
+*/
+@theme inline {
+  /* Wood - warna utama, kesan kayu jati & kehangatan tradisi Jawa */
+  --color-wood-50: #f1efee;
+  --color-wood-100: #dedbd8;
+  --color-wood-200: #c1bab5;
+  --color-wood-300: #a49a92;
+  --color-wood-400: #807266;
+  --color-wood-500: #4a3525;
+  --color-wood-600: #3f2d1f;
+  --color-wood-700: #322419;
+  --color-wood-800: #261c13;
+  --color-wood-900: #1c140e;
+  --color-wood-950: #120d09;
+
+  /* Forest - warna sekunder, kesan alam pegunungan Kota Batu */
+  --color-forest-50: #edf0ef;
+  --color-forest-100: #d6ddda;
+  --color-forest-200: #b1bfb9;
+  --color-forest-300: #8da198;
+  --color-forest-400: #5f7b70;
+  --color-forest-500: #1b4332;
+  --color-forest-600: #17392a;
+  --color-forest-700: #122e22;
+  --color-forest-800: #0e231a;
+  --color-forest-900: #0a1913;
+  --color-forest-950: #07110c;
+
+  /* Gold - warna aksen, sentuhan elegan & modern */
+  --color-gold-50: #fcf9ef;
+  --color-gold-100: #f7f1db;
+  --color-gold-200: #f0e4bb;
+  --color-gold-300: #ead79b;
+  --color-gold-400: #e1c773;
+  --color-gold-500: #d4af37;
+  --color-gold-600: #b4952f;
+  --color-gold-700: #907725;
+  --color-gold-800: #6e5b1d;
+  --color-gold-900: #514215;
+  --color-gold-950: #352c0e;
+
+  /* Cream - warna latar utama, supaya mata nyaman saat membaca */
+  --color-cream-DEFAULT: #faf8f5;
+  --color-cream-100: #ffffff;
+  --color-cream-200: #f3efe8;
+  --color-cream-300: #e9e2d6;
+
+  /* Font family, di-inject dari next/font lewat variable CSS di layout.tsx */
+  --font-heading: var(--font-fraunces);
+  --font-body: var(--font-jakarta);
+}
+
+:root {
+  --background: var(--color-cream-DEFAULT);
+  --foreground: var(--color-wood-900);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+.font-heading {
+  font-family: var(--font-heading), ui-serif, Georgia, serif;
+}
+
+/* Utility kecil untuk garis dekoratif khas company profile (lihat referensi PDF) */
+.divider-accent {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.divider-accent::before,
+.divider-accent::after {
+  content: "";
+  height: 1px;
+  width: 2.5rem;
+  background: var(--color-gold-500);
+}
+
+/* Di layar sangat sempit, label eyebrow yang panjang bisa wrap 2 baris dan
+   membuat garis dekoratif terlihat mengambang di tengah. Disembunyikan saja
+   khusus di lebar ini, teks tetap terbaca jelas tanpa elemen dekoratif. */
+@media (max-width: 420px) {
+  .divider-accent::before,
+  .divider-accent::after {
+    display: none;
+  }
+}
