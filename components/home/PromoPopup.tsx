@@ -8,8 +8,6 @@ import { ArrowRight, Check, Sparkles, X } from "lucide-react";
 import { PROMO_POPUP } from "@/lib/promo-data";
 import { WEDDING_PACKAGES } from "@/lib/wedding-data";
 
-// Awalan kunci penyimpanan di browser. Digabung dengan id promo, jadi begitu
-// promonya berganti id, popup otomatis muncul lagi untuk semua pengunjung.
 const STORAGE_PREFIX = "wjs-promo-";
 
 export function PromoPopup() {
@@ -21,12 +19,9 @@ export function PromoPopup() {
   const tutup = useCallback(() => {
     setIsOpen(false);
     try {
-      // Simpan waktu penutupan, bukan sekadar penanda "sudah dilihat", supaya
-      // popup bisa muncul lagi setelah jeda yang ditentukan di promo-data.
       window.localStorage.setItem(storageKey, String(Date.now()));
     } catch {
-      // Sebagian browser memblokir localStorage pada mode privat. Kalau gagal,
-      // biarkan saja: popup tetap tertutup untuk kunjungan ini.
+      // Ignore localStorage error in private mode
     }
   }, [storageKey]);
 
@@ -42,7 +37,6 @@ export function PromoPopup() {
         bolehTampil = selisihJam >= PROMO_POPUP.jedaTampilJam;
       }
     } catch {
-      // Kalau localStorage tidak bisa dibaca, tetap tampilkan promonya.
       bolehTampil = true;
     }
 
@@ -52,8 +46,6 @@ export function PromoPopup() {
     return () => window.clearTimeout(timer);
   }, [storageKey]);
 
-  // Tombol Esc untuk menutup, dan scroll halaman dikunci selama popup terbuka
-  // supaya latar belakangnya tidak ikut bergeser.
   useEffect(() => {
     if (!isOpen) return;
 
@@ -84,13 +76,10 @@ export function PromoPopup() {
           role="dialog"
           aria-modal="true"
           aria-labelledby="judul-promo"
-          // Klik di area gelap mana saja akan menutup popup.
           onClick={tutup}
           className="fixed inset-0 z-[70] flex items-center justify-center bg-wood-950/85 p-4 backdrop-blur-sm sm:p-8"
         >
-          {/* Tombol tutup ditaruh di lapisan overlay, bukan di dalam kartu,
-              supaya tetap terlihat walau isi kartunya perlu di-scroll pada
-              layar HP yang pendek. */}
+          {/* Tombol Tutup */}
           <button
             type="button"
             onClick={tutup}
@@ -101,8 +90,6 @@ export function PromoPopup() {
           </button>
 
           <motion.div
-            // Masuk dengan sedikit putaran pada sumbu X sehingga terasa
-            // "berdiri" dari kejauhan, bukan sekadar membesar di tempat.
             initial={
               prefersReducedMotion
                 ? { opacity: 0 }
@@ -115,26 +102,26 @@ export function PromoPopup() {
                 : { opacity: 0, scale: 0.94, rotateX: 8 }
             }
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            // Klik di dalam kartu tidak ikut menutup popup.
             onClick={(event) => event.stopPropagation()}
             style={{ transformStyle: "preserve-3d", perspective: 1200 }}
             className="relative max-h-[86dvh] w-full max-w-3xl overflow-y-auto overscroll-contain rounded-[1.75rem] bg-wood-900 shadow-2xl shadow-wood-950/60 sm:rounded-[2rem]"
           >
-            <div className="grid grid-cols-1 sm:grid-cols-[0.9fr_1.1fr]">
-              {/* Kolom gambar promo */}
-              <div className="relative aspect-[2/1] w-full sm:aspect-auto sm:h-full sm:min-h-[420px]">
-                <Image
-                  src={PROMO_POPUP.image}
-                  alt={PROMO_POPUP.alt}
-                  fill
-                  sizes="(max-width: 640px) 100vw, 40vw"
-                  className="object-cover"
-                  priority
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-wood-950/70 via-transparent to-transparent sm:bg-gradient-to-r sm:from-transparent sm:via-transparent sm:to-wood-900/80" />
+            <div className="grid grid-cols-1 sm:grid-cols-[1fr_1.1fr]">
+              {/* Kolom Gambar Promo (Background Transparan & Ukuran Pas) */}
+              <div className="relative flex min-h-[380px] w-full items-center justify-center p-3 sm:min-h-[500px] sm:p-6">
+                <div className="relative h-full w-full">
+                  <Image
+                    src={PROMO_POPUP.image}
+                    alt={PROMO_POPUP.alt}
+                    fill
+                    sizes="(max-width: 640px) 100vw, 45vw"
+                    className="object-contain drop-shadow-[0_20px_35px_rgba(0,0,0,0.55)]"
+                    priority
+                  />
+                </div>
               </div>
 
-              {/* Kolom teks */}
+              {/* Kolom Teks Informasi */}
               <div className="flex flex-col justify-center p-6 sm:p-9">
                 <span
                   style={{ transform: "translateZ(40px)" }}
@@ -155,9 +142,7 @@ export function PromoPopup() {
                   {PROMO_POPUP.subtitle}
                 </p>
 
-                {/* Ringkasan harga diambil langsung dari data paket wedding,
-                    jadi kalau harganya berubah di satu tempat, popup ikut
-                    menyesuaikan tanpa perlu diedit lagi. */}
+                {/* Ringkasan Harga Paket */}
                 <div className="mt-6 flex flex-wrap gap-2">
                   {WEDDING_PACKAGES.map((paket) => (
                     <div
@@ -174,6 +159,7 @@ export function PromoPopup() {
                   ))}
                 </div>
 
+                {/* Poin Benefit */}
                 <ul className="mt-6 space-y-2">
                   {PROMO_POPUP.poin.map((poin) => (
                     <li key={poin} className="flex items-start gap-2.5">
@@ -185,11 +171,7 @@ export function PromoPopup() {
                   ))}
                 </ul>
 
-                {/* Tombol aksi dibuat menempel di dasar kartu. Pada HP dengan
-                    layar pendek isi kartu perlu di-scroll, dan cara ini
-                    memastikan tombolnya tetap terlihat tanpa harus scroll
-                    dulu. Di layar besar tidak ada efeknya karena isinya
-                    memang sudah muat. */}
+                {/* Tombol Aksi Sticky */}
                 <div className="sticky bottom-0 mt-7 bg-wood-900 pb-1 pt-3">
                   <Link
                     href={PROMO_POPUP.ctaHref}
@@ -208,6 +190,7 @@ export function PromoPopup() {
                   </p>
                 </div>
               </div>
+
             </div>
           </motion.div>
         </motion.div>
