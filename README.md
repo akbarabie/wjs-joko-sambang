@@ -15,7 +15,7 @@ Dibangun dari nol dengan Next.js 16, fokus pada pengalaman visual dan performa d
 [![Framer Motion](https://img.shields.io/badge/Framer_Motion-Animation-0055FF?style=for-the-badge&logo=framer&logoColor=white)](https://www.framer.com/motion/)
 [![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com)
 
-**[🌐 Lihat Website](https://GANTI-DENGAN-URL-VERCEL.vercel.app)** • **[📄 Dokumentasi Teknis](DESCRIPTION.md)** • **[📋 Company Profile PDF](https://online.fliphtml5.com/wjsjokosambang/Company-profile-Wjs-revisi/#p=1)**
+**[🌐 Lihat Website](https://wjs-joko-sambang.vercel.app/)** • **[📄 Dokumentasi Teknis](DESCRIPTION.md)** • **[📋 Company Profile PDF](https://online.fliphtml5.com/wjsjokosambang/Company-profile-Wjs-revisi/#p=1)**
 
 </div>
 
