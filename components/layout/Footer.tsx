@@ -126,7 +126,7 @@ export function Footer() {
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="h-5 w-5 shrink-0 text-gold-500" />
-                <span>{CONTACT.socials.instagram.handle}</span>
+                <span>{CONTACT.email.display}</span>
               </li>
             </ul>
           </div>

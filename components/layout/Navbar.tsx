@@ -131,9 +131,10 @@ export function Navbar() {
           </nav>
 
           <Link
-            href={buildWhatsAppLink(DEFAULT_RESERVATION_MESSAGE)}
-            target="_blank"
-            rel="noopener noreferrer"
+            href= "/contact"
+            // href={buildWhatsAppLink(DEFAULT_RESERVATION_MESSAGE)}
+            // target="_blank"
+            // rel="noopener noreferrer"
             className="inline-flex shrink-0 items-center gap-2 rounded-full bg-forest-500 px-5 py-2.5 text-sm font-semibold text-cream-100 shadow-md shadow-forest-900/20 transition-colors hover:bg-forest-600"
           >
             <WhatsAppIcon className="h-5 w-5" />

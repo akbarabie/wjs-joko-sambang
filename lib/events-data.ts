@@ -117,8 +117,8 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
   {
     id: "gallery-04",
     src: "/images/gallery/gallery-04.jpg",
-    alt: "Detail menu di atas meja saji",
-    caption: "Detail Meja Saji",
+    alt: "Keceriaan Bernyanyi Bersama",
+    caption: "Moment Keceriaan",
     orientation: "landscape",
   },
   {

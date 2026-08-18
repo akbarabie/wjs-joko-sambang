@@ -22,6 +22,9 @@ export const CONTACT = {
     display: "0853-8527-5390",
     international: "6285385275390",
   },
+  email: {
+    display: "jokosambang1103@gmail.com",
+  },
   socials: {
     tiktok: { handle: "@jokosambang", url: "https://www.tiktok.com/@jokosambang" },
     instagram: { handle: "@wjs_jokosambang", url: "https://www.instagram.com/wjs_jokosambang" },
@@ -87,5 +90,5 @@ export const NAV_LINKS: NavItem[] = [
       { label: "Testimoni", href: "/gallery#testimoni" },
     ],
   },
-  { label: "Contact & Location", href: "/contact" },
+  // { label: "Contact & Location", href: "/contact" },
 ];
