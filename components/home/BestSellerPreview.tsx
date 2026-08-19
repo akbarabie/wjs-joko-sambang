@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, Star } from "lucide-react";
-import { BEST_SELLER_MENU } from "@/lib/menu-data";
+import type { MenuItem } from "@/lib/menu-data";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 28 },
@@ -15,7 +15,8 @@ const fadeUp = {
   }),
 };
 
-export function BestSellerPreview() {
+// Daftar menu dikirim dari halaman, yang mengambilnya dari Sanity.
+export function BestSellerPreview({ menu }: { menu: MenuItem[] }) {
   return (
     <section className="bg-cream-200/70 py-24 sm:py-28">
       <div className="mx-auto max-w-6xl px-6">
@@ -76,7 +77,7 @@ export function BestSellerPreview() {
         </motion.div>
 
         <div className="mt-14 grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6">
-          {BEST_SELLER_MENU.map((item, index) => (
+          {menu.map((item, index) => (
             <motion.div
               key={item.id}
               initial="hidden"

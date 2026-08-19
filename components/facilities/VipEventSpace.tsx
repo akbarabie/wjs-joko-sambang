@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Users } from "lucide-react";
-import { PRIVATE_SPACES } from "@/lib/facilities-data";
+import type { SpaceItem } from "@/lib/facilities-data";
 import { FacilityIcon } from "@/components/facilities/FacilityIcon";
 import { TiltCard } from "@/components/ui/TiltCard";
 import { buildWhatsAppLink } from "@/lib/constants";
@@ -18,7 +18,8 @@ const fadeUp = {
   }),
 };
 
-export function VipEventSpace() {
+// Daftar ruang privat dikirim dari halaman, yang mengambilnya dari Sanity.
+export function VipEventSpace({ ruang }: { ruang: SpaceItem[] }) {
   return (
     <section
       id="vip-event"
@@ -45,7 +46,7 @@ export function VipEventSpace() {
         </motion.div>
 
         <div className="mt-14 grid grid-cols-1 gap-8 lg:grid-cols-2">
-          {PRIVATE_SPACES.map((space, index) => {
+          {ruang.map((space, index) => {
             const waMessage = `Halo WJS Joko Sambang Café, saya ingin menanyakan ketersediaan ${space.name} beserta paket harganya.`;
 
             return (

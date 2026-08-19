@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { VENUE_PHOTOS } from "@/lib/facilities-data";
+import type { FotoVenue } from "@/sanity/lib/konten";
 import { cn } from "@/lib/utils";
 
 const fadeUp = {
@@ -19,18 +19,19 @@ const fadeUp = {
 // Jarak geser minimal (px) sebelum swipe dianggap sebagai perpindahan slide.
 const SWIPE_THRESHOLD = 60;
 
-export function VenueCoverflow() {
+// Daftar foto venue dikirim dari halaman, yang mengambilnya dari Sanity.
+export function VenueCoverflow({ foto }: { foto: FotoVenue[] }) {
   const [activeIndex, setActiveIndex] = useState(
-    Math.floor(VENUE_PHOTOS.length / 2),
+    Math.floor(foto.length / 2),
   );
   const prefersReducedMotion = useReducedMotion();
 
-  const activePhoto = VENUE_PHOTOS[activeIndex];
+  const activePhoto = foto[activeIndex];
 
   function goTo(nextIndex: number) {
     // Modulo dengan penambahan panjang array supaya indeks negatif tetap valid
     // dan carousel bisa berputar terus tanpa mentok di ujung.
-    const total = VENUE_PHOTOS.length;
+    const total = foto.length;
     setActiveIndex(((nextIndex % total) + total) % total);
   }
 
@@ -79,7 +80,7 @@ export function VenueCoverflow() {
           style={{ transformStyle: "preserve-3d" }}
           className="relative h-full w-full cursor-grab active:cursor-grabbing"
         >
-          {VENUE_PHOTOS.map((photo, index) => {
+          {foto.map((photo, index) => {
             const offset = index - activeIndex;
             const distance = Math.abs(offset);
             const isActive = offset === 0;
@@ -100,7 +101,7 @@ export function VenueCoverflow() {
                 }}
                 transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
                 style={{
-                  zIndex: VENUE_PHOTOS.length - distance,
+                  zIndex: foto.length - distance,
                   transformStyle: "preserve-3d",
                   pointerEvents: distance > 2 ? "none" : "auto",
                 }}
@@ -153,7 +154,7 @@ export function VenueCoverflow() {
           </button>
 
           <div className="flex items-center gap-2">
-            {VENUE_PHOTOS.map((photo, index) => (
+            {foto.map((photo, index) => (
               <button
                 key={photo.id}
                 type="button"

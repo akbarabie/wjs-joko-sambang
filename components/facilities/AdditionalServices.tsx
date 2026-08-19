@@ -2,7 +2,10 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { HIGHLIGHT_SERVICES, SUPPORT_FACILITIES } from "@/lib/facilities-data";
+import type {
+  HighlightService,
+  SupportFacility,
+} from "@/lib/facilities-data";
 import { FacilityIcon } from "@/components/facilities/FacilityIcon";
 import { TiltCard } from "@/components/ui/TiltCard";
 
@@ -15,7 +18,14 @@ const fadeUp = {
   }),
 };
 
-export function AdditionalServices() {
+// Layanan dan fasilitas dikirim dari halaman, yang mengambilnya dari Sanity.
+export function AdditionalServices({
+  layanan,
+  penunjang,
+}: {
+  layanan: HighlightService[];
+  penunjang: SupportFacility[];
+}) {
   return (
     <section className="bg-cream-200/60 px-6 py-24 sm:py-28">
       <div className="mx-auto max-w-6xl">
@@ -40,7 +50,7 @@ export function AdditionalServices() {
 
         {/* Dua layanan utama ditampilkan besar dengan foto */}
         <div className="mt-14 grid grid-cols-1 gap-8 md:grid-cols-2">
-          {HIGHLIGHT_SERVICES.map((service, index) => (
+          {layanan.map((service, index) => (
             <motion.div
               key={service.id}
               initial="hidden"
@@ -81,7 +91,7 @@ export function AdditionalServices() {
 
         {/* Fasilitas penunjang lain, cukup ditampilkan ringkas dengan icon */}
         <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
-          {SUPPORT_FACILITIES.map((facility, index) => (
+          {penunjang.map((facility, index) => (
             <motion.div
               key={facility.label}
               initial="hidden"

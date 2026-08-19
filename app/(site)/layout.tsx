@@ -1,24 +1,15 @@
 import type { Metadata } from "next";
-import { Fraunces, Plus_Jakarta_Sans } from "next/font/google";
-import "./globals.css";
+// Font di-host sendiri lewat paket fontsource, tidak lagi diunduh dari
+// Google tiap build. Ini menghindari kegagalan build saat koneksi ke
+// fonts.gstatic.com bermasalah (font tersimpan lokal di node_modules).
+// Fraunces: dipakai untuk heading, sertakan italic sesuai desain awal.
+import "@fontsource-variable/fraunces/full.css";
+import "@fontsource-variable/fraunces/full-italic.css";
+// Plus Jakarta Sans: dipakai untuk body text sesuai PRD section 5.2.
+import "@fontsource-variable/plus-jakarta-sans/wght.css";
+import "../globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-
-// Fraunces: serif modern dengan karakter hangat, cocok untuk kesan
-// "Jawa Modern" yang elegan tapi tidak kaku seperti serif klasik biasa.
-const fraunces = Fraunces({
-  subsets: ["latin"],
-  variable: "--font-fraunces",
-  weight: ["500", "600", "700"],
-  style: ["normal", "italic"],
-});
-
-// Plus Jakarta Sans dipakai sesuai rekomendasi PRD section 5.2 untuk body text.
-const jakartaSans = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  variable: "--font-jakarta",
-  weight: ["400", "500", "600", "700"],
-});
 
 // Metadata dasar mengacu pada PRD section 6 (SEO seputar cafe Batu,
 // tempat meeting Batu, kuliner Batu). Detail per halaman akan dilengkapi
@@ -51,7 +42,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="id" className={`${fraunces.variable} ${jakartaSans.variable}`}>
+    <html lang="id">
       <body className="flex min-h-screen flex-col bg-cream-DEFAULT font-sans text-wood-900 antialiased">
         <Navbar />
         <main className="flex-1">{children}</main>

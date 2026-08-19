@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
-import { PUBLIC_SPACES } from "@/lib/facilities-data";
+import type { SpaceItem } from "@/lib/facilities-data";
 import { FacilityIcon } from "@/components/facilities/FacilityIcon";
 import { TiltCard } from "@/components/ui/TiltCard";
 import { cn } from "@/lib/utils";
@@ -18,12 +18,13 @@ const fadeUp = {
   }),
 };
 
-export function PublicSpaceExplorer() {
-  const [activeSpaceId, setActiveSpaceId] = useState(PUBLIC_SPACES[0].id);
+// Daftar ruang dikirim dari halaman, yang mengambilnya dari Sanity.
+export function PublicSpaceExplorer({ ruang }: { ruang: SpaceItem[] }) {
+  const [activeSpaceId, setActiveSpaceId] = useState(ruang[0].id);
   const [activePhoto, setActivePhoto] = useState(0);
 
   const activeSpace =
-    PUBLIC_SPACES.find((space) => space.id === activeSpaceId) ?? PUBLIC_SPACES[0];
+    ruang.find((space) => space.id === activeSpaceId) ?? ruang[0];
   const photo = activeSpace.images[activePhoto] ?? activeSpace.images[0];
 
   // Saat pindah tab, foto dikembalikan ke urutan pertama supaya tidak
@@ -68,7 +69,7 @@ export function PublicSpaceExplorer() {
           className="mt-12 flex justify-center"
         >
           <div className="inline-flex rounded-full border border-wood-100 bg-cream-100 p-1.5 shadow-sm">
-            {PUBLIC_SPACES.map((space) => {
+            {ruang.map((space) => {
               const isActive = space.id === activeSpaceId;
               return (
                 <button

@@ -4,25 +4,27 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import type { SpaceItem } from "@/lib/facilities-data";
 
+// Teks ringkas khusus halaman depan, sengaja lebih pendek daripada teks di
+// halaman Facilities. Fotonya tidak ditulis di sini, melainkan diambil dari
+// data ruang yang sama dengan halaman Facilities, supaya sekali ganti foto
+// di Studio kedua halaman ikut berubah.
 const FACILITIES_PREVIEW = [
   {
     id: "indoor",
     label: "Indoor Space",
     description: "Nyaman & sejuk dengan sentuhan kayu Jawa modern",
-    image: "/images/facilities/facility-indoor-1.jpg",
   },
   {
     id: "outdoor",
     label: "Outdoor Space",
     description: "Asri, hijau, dan sejuk khas pegunungan Batu",
-    image: "/images/facilities/facility-outdoor-1.jpeg",
   },
   {
-    id: "vip",
+    id: "vip-room",
     label: "VIP / Meeting Room",
     description: "Lengkap dengan proyektor dan sound system",
-    image: "/images/facilities/facility-vip-room.jpeg",
   },
 ];
 
@@ -35,7 +37,20 @@ const fadeUp = {
   }),
 };
 
-export function FacilitiesQuickLook() {
+// Daftar ruang dikirim dari halaman, dipakai hanya untuk mengambil fotonya.
+export function FacilitiesQuickLook({ ruang }: { ruang: SpaceItem[] }) {
+  // Cocokkan tiap kartu pratinjau dengan ruang yang sesuai, lalu pakai foto
+  // pertamanya. Kalau ruangnya belum ada di Sanity, kartunya dilewati supaya
+  // tidak muncul kotak kosong.
+  const facilities = FACILITIES_PREVIEW.map((pratinjau) => {
+    const cocok = ruang.find((item) => item.id === pratinjau.id);
+    return { ...pratinjau, image: cocok?.images?.[0]?.src };
+  }).filter(
+    // Penyaring ini sekaligus memberi tahu TypeScript bahwa setelah tahap
+    // ini foto dipastikan ada, jadi tidak perlu diperiksa ulang di bawah.
+    (item): item is (typeof item) & { image: string } => Boolean(item.image),
+  );
+
   return (
     <section className="mx-auto max-w-6xl px-6 py-24 sm:py-28">
       <motion.div
@@ -57,7 +72,7 @@ export function FacilitiesQuickLook() {
       </motion.div>
 
       <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-3">
-        {FACILITIES_PREVIEW.map((facility, index) => (
+        {facilities.map((facility, index) => (
           <motion.div
             key={facility.id}
             initial="hidden"

@@ -5,9 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowUpRight, Plus } from "lucide-react";
-import { MENU_CATEGORIES } from "@/lib/menu-data";
+import type { MenuCategoryItem } from "@/lib/menu-data";
 import { TiltCard } from "@/components/ui/TiltCard";
-import { buildWhatsAppLink } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
 const fadeUp = {
@@ -19,11 +18,16 @@ const fadeUp = {
   }),
 };
 
-function pesanKategori(nama: string) {
-  return `Halo WJS Joko Sambang Café, boleh minta daftar menu lengkap untuk kategori ${nama} beserta harganya?`;
-}
+// function pesanKategori(nama: string) {
+//   return `Halo WJS Joko Sambang Café, boleh minta daftar menu lengkap untuk kategori ${nama} beserta harganya?`;
+// }
 
-export function CategoryAccordion() {
+// Daftar kategori dikirim dari halaman, yang mengambilnya dari Sanity.
+export function CategoryAccordion({
+  kategori,
+}: {
+  kategori: MenuCategoryItem[];
+}) {
   const [activeIndex, setActiveIndex] = useState(0);
   const prefersReducedMotion = useReducedMotion();
 
@@ -64,7 +68,7 @@ export function CategoryAccordion() {
           style={{ perspective: 1600 }}
           className="mt-14 hidden h-[500px] gap-3 lg:flex"
         >
-          {MENU_CATEGORIES.map((category, index) => {
+          {kategori.map((category, index) => {
             const isActive = index === activeIndex;
             const arahMiring = index < activeIndex ? 5 : -5;
 
@@ -158,7 +162,7 @@ export function CategoryAccordion() {
         {/* Tampilan mobile dan tablet: kartu bertumpuk, tanpa panel melebar
             karena layarnya tidak cukup lebar untuk itu. */}
         <div className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:hidden">
-          {MENU_CATEGORIES.map((category, index) => (
+          {kategori.map((category, index) => (
             <motion.div
               key={category.id}
               initial="hidden"
@@ -225,15 +229,23 @@ export function CategoryAccordion() {
             Ingin daftar menu lengkap beserta harganya?
           </p>
           <Link
-            href={buildWhatsAppLink(
-              pesanKategori(MENU_CATEGORIES[activeIndex].name),
-            )}
+            href="https://heyzine.com/flip-book/3036b41ce2.html"
             target="_blank"
             rel="noopener noreferrer"
             className="group mt-4 inline-flex items-center gap-2 rounded-full border border-cream-100/25 px-6 py-3 text-sm font-semibold text-cream-100 transition-colors hover:border-gold-500 hover:bg-gold-500 hover:text-wood-900"
           >
-            Minta Daftar Menu via WhatsApp
-            <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+            Lihat Menu disini
+            {/* Animasi bounce diagonal terus-menerus */}
+            <motion.span
+              animate={{ x: [0, 3, 0], y: [0, -3, 0] }}
+              transition={{
+                duration: 1.2,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
+              <ArrowUpRight className="h-4 w-4" />
+            </motion.span>
           </Link>
         </motion.div>
       </div>

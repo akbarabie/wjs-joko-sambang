@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Maximize2, X } from "lucide-react";
-import { GALLERY_PHOTOS } from "@/lib/events-data";
+import type { GalleryPhoto } from "@/lib/events-data";
 import { cn } from "@/lib/utils";
 
 const fadeUp = {
@@ -16,19 +16,25 @@ const fadeUp = {
   }),
 };
 
-export function PhotoGalleryMasonry() {
+// Daftar foto dikirim dari halaman, yang mengambilnya dari Sanity.
+export function PhotoGalleryMasonry({ foto }: { foto: GalleryPhoto[] }) {
   // null berarti lightbox sedang tertutup.
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   const closeLightbox = useCallback(() => setActiveIndex(null), []);
 
-  const goTo = useCallback((step: number) => {
-    setActiveIndex((current) => {
-      if (current === null) return current;
-      const total = GALLERY_PHOTOS.length;
-      return ((current + step) % total + total) % total;
-    });
-  }, []);
+  const goTo = useCallback(
+    (step: number) => {
+      setActiveIndex((current) => {
+        if (current === null) return current;
+        const total = foto.length;
+        return (((current + step) % total) + total) % total;
+      });
+    },
+    // Jumlah foto ikut didaftarkan karena admin bisa menambah atau menghapus
+    // foto galeri lewat Studio.
+    [foto.length],
+  );
 
   // Navigasi lewat keyboard: panah kiri/kanan untuk pindah foto, Esc untuk
   // menutup. Penting supaya lightbox tetap bisa dipakai tanpa mouse.
@@ -54,7 +60,7 @@ export function PhotoGalleryMasonry() {
     };
   }, [activeIndex, closeLightbox, goTo]);
 
-  const activePhoto = activeIndex === null ? null : GALLERY_PHOTOS[activeIndex];
+  const activePhoto = activeIndex === null ? null : foto[activeIndex];
 
   return (
     <section
@@ -84,7 +90,7 @@ export function PhotoGalleryMasonry() {
             berbeda-beda, dan cara ini tidak butuh perhitungan JavaScript
             sehingga tetap ringan saat halaman pertama kali dibuka. */}
         <div className="mt-14 columns-1 gap-5 sm:columns-2 lg:columns-3">
-          {GALLERY_PHOTOS.map((photo, index) => (
+          {foto.map((photo, index) => (
             <motion.button
               key={photo.id}
               type="button"
@@ -198,7 +204,7 @@ export function PhotoGalleryMasonry() {
                   {activePhoto.caption}
                 </p>
                 <p className="mt-1 text-xs text-cream-200/60">
-                  {(activeIndex ?? 0) + 1} dari {GALLERY_PHOTOS.length}
+                  {(activeIndex ?? 0) + 1} dari {foto.length}
                 </p>
               </figcaption>
             </motion.figure>
