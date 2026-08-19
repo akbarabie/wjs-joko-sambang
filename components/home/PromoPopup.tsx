@@ -5,12 +5,26 @@ import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, Check, Sparkles, X } from "lucide-react";
-import { PROMO_POPUP } from "@/lib/promo-data";
+import type { PromoPopupData } from "@/lib/promo-data";
 import { WEDDING_PACKAGES } from "@/lib/wedding-data";
 
 const STORAGE_PREFIX = "wjs-promo-";
 
-export function PromoPopup() {
+// Isi promo dikirim dari halaman, yang mengambilnya dari Sanity.
+//
+// Dipecah jadi dua bagian dengan sengaja. Pembungkus di bawah ini yang
+// memeriksa apakah promonya ada. Kalau dokumen promo belum dibuat atau
+// dihapus dari Studio, popup langsung tidak dirender sama sekali. Isi
+// komponennya baru dijalankan setelah datanya dipastikan ada, supaya
+// pemeriksaan riwayat tutup popup di dalamnya tidak perlu ikut memikirkan
+// kemungkinan data kosong.
+export function PromoPopup({ promo }: { promo: PromoPopupData | null }) {
+  if (!promo) return null;
+  return <PromoPopupIsi promo={promo} />;
+}
+
+function PromoPopupIsi({ promo }: { promo: PromoPopupData }) {
+  const PROMO_POPUP = promo;
   const [isOpen, setIsOpen] = useState(false);
   const prefersReducedMotion = useReducedMotion();
 
@@ -44,7 +58,14 @@ export function PromoPopup() {
 
     const timer = window.setTimeout(() => setIsOpen(true), PROMO_POPUP.delayMs);
     return () => window.clearTimeout(timer);
-  }, [storageKey]);
+    // Nilai promo ikut didaftarkan karena sekarang datangnya dari Sanity dan
+    // bisa berubah, tidak lagi berupa nilai tetap seperti waktu masih di file.
+  }, [
+    storageKey,
+    PROMO_POPUP.aktif,
+    PROMO_POPUP.delayMs,
+    PROMO_POPUP.jedaTampilJam,
+  ]);
 
   useEffect(() => {
     if (!isOpen) return;

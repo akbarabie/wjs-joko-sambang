@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { MapPin, Quote, Star } from "lucide-react";
-import { TESTIMONIALS } from "@/lib/testimonials-data";
+import type { Testimonial } from "@/lib/testimonials-data";
 import { TiltCard } from "@/components/ui/TiltCard";
 import { CONTACT } from "@/lib/constants";
 
@@ -16,7 +16,12 @@ const fadeUp = {
   }),
 };
 
-export function TestimonialWall() {
+// Daftar testimoni dikirim dari halaman, yang mengambilnya dari Sanity.
+export function TestimonialWall({
+  testimoni,
+}: {
+  testimoni: Testimonial[];
+}) {
   return (
     <section
       id="testimoni"
@@ -42,7 +47,7 @@ export function TestimonialWall() {
         </motion.div>
 
         <div className="mt-14 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {TESTIMONIALS.map((testimonial, index) => (
+          {testimoni.map((testimonial, index) => (
             <motion.div
               key={testimonial.id}
               initial="hidden"

@@ -5,6 +5,13 @@ import { VipEventSpace } from "@/components/facilities/VipEventSpace";
 import { VenueCoverflow } from "@/components/facilities/VenueCoverflow";
 import { AdditionalServices } from "@/components/facilities/AdditionalServices";
 import { FacilitiesCta } from "@/components/facilities/FacilitiesCta";
+import {
+  ambilFasilitasPenunjang,
+  ambilFotoVenue,
+  ambilLayananUnggulan,
+  ambilRuangPrivat,
+  ambilRuangUmum,
+} from "@/sanity/lib/konten";
 
 export const metadata: Metadata = {
   title: "Facilities & Spaces",
@@ -19,14 +26,25 @@ export const metadata: Metadata = {
   },
 };
 
-export default function FacilitiesPage() {
+// Isi halaman diambil dari Sanity, semuanya berbarengan supaya tidak
+// saling menunggu.
+export default async function FacilitiesPage() {
+  const [ruangUmum, ruangPrivat, fotoVenue, layanan, penunjang] =
+    await Promise.all([
+      ambilRuangUmum(),
+      ambilRuangPrivat(),
+      ambilFotoVenue(),
+      ambilLayananUnggulan(),
+      ambilFasilitasPenunjang(),
+    ]);
+
   return (
     <>
       <FacilitiesHero />
-      <PublicSpaceExplorer />
-      <VipEventSpace />
-      <VenueCoverflow />
-      <AdditionalServices />
+      <PublicSpaceExplorer ruang={ruangUmum} />
+      <VipEventSpace ruang={ruangPrivat} />
+      <VenueCoverflow foto={fotoVenue} />
+      <AdditionalServices layanan={layanan} penunjang={penunjang} />
       <FacilitiesCta />
     </>
   );

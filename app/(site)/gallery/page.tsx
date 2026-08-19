@@ -3,6 +3,11 @@ import { GalleryHero } from "@/components/gallery/GalleryHero";
 import { EventShowcase } from "@/components/gallery/EventShowcase";
 import { PhotoGalleryMasonry } from "@/components/gallery/PhotoGalleryMasonry";
 import { TestimonialWall } from "@/components/gallery/TestimonialWall";
+import {
+  ambilEvents,
+  ambilGalleryPhotos,
+  ambilTestimonials,
+} from "@/sanity/lib/konten";
 
 export const metadata: Metadata = {
   title: "Events & Gallery",
@@ -17,13 +22,21 @@ export const metadata: Metadata = {
   },
 };
 
-export default function GalleryPage() {
+// Isi halaman diambil dari Sanity, ketiganya berbarengan supaya tidak
+// saling menunggu.
+export default async function GalleryPage() {
+  const [events, foto, testimoni] = await Promise.all([
+    ambilEvents(),
+    ambilGalleryPhotos(),
+    ambilTestimonials(),
+  ]);
+
   return (
     <>
       <GalleryHero />
-      <EventShowcase />
-      <PhotoGalleryMasonry />
-      <TestimonialWall />
+      <EventShowcase events={events} />
+      <PhotoGalleryMasonry foto={foto} />
+      <TestimonialWall testimoni={testimoni} />
     </>
   );
 }

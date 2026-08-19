@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { Flame } from "lucide-react";
-import { BEST_SELLER_MENU, type MenuCategory } from "@/lib/menu-data";
+import type { MenuCategory, MenuItem } from "@/lib/menu-data";
 import { TiltCard } from "@/components/ui/TiltCard";
 import { cn } from "@/lib/utils";
 
@@ -25,13 +25,14 @@ const fadeUp = {
   }),
 };
 
-export function BestSellerGrid() {
+// Daftar menu dikirim dari halaman, yang mengambilnya dari Sanity.
+export function BestSellerGrid({ menu }: { menu: MenuItem[] }) {
   const [filter, setFilter] = useState<FilterValue>("all");
 
   const items =
     filter === "all"
-      ? BEST_SELLER_MENU
-      : BEST_SELLER_MENU.filter((item) => item.category === filter);
+      ? menu
+      : menu.filter((item) => item.category === filter);
 
   return (
     <section

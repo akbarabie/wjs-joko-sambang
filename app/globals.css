@@ -61,6 +61,13 @@
 :root {
   --background: var(--color-cream-DEFAULT);
   --foreground: var(--color-wood-900);
+
+  /* Nama family font dari paket fontsource (lihat import di layout.tsx).
+     Sebelumnya variabel ini di-inject next/font lewat className html,
+     sekarang didefinisikan langsung karena font sudah di-host sendiri. */
+  --font-fraunces: "Fraunces Variable", ui-serif, Georgia, serif;
+  --font-jakarta: "Plus Jakarta Sans Variable", ui-sans-serif, system-ui,
+    sans-serif;
 }
 
 body {

@@ -8,11 +8,7 @@ import { ChevronDown, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/ui/Logo";
 import { WhatsAppIcon } from "@/components/ui/WhatsAppIcon";
-import {
-  DEFAULT_RESERVATION_MESSAGE,
-  NAV_LINKS,
-  buildWhatsAppLink,
-} from "@/lib/constants";
+import { NAV_LINKS } from "@/lib/constants";
 
 // Navbar dipisah jadi Client Component karena butuh state (scroll position,
 // buka/tutup menu mobile) dan animasi Framer Motion. Sisanya di project ini
@@ -219,9 +215,9 @@ export function Navbar() {
             </nav>
             <div className="px-6 pt-4">
               <Link
-                href={buildWhatsAppLink(DEFAULT_RESERVATION_MESSAGE)}
-                target="_blank"
-                rel="noopener noreferrer"
+                href="/contact"
+                // target="_blank"
+                // rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 rounded-full bg-forest-500 px-5 py-3 text-sm font-semibold text-cream-100"
               >
                 <WhatsAppIcon className="h-5 w-5" />

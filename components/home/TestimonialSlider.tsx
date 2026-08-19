@@ -3,23 +3,30 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Quote, Star } from "lucide-react";
-import { TESTIMONIALS } from "@/lib/testimonials-data";
+import type { Testimonial } from "@/lib/testimonials-data";
 
-export function TestimonialSlider() {
+// Daftar testimoni dikirim dari halaman, yang mengambilnya dari Sanity.
+export function TestimonialSlider({
+  testimoni,
+}: {
+  testimoni: Testimonial[];
+}) {
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % TESTIMONIALS.length);
+      setActiveIndex((prev) => (prev + 1) % testimoni.length);
     }, 5500);
     return () => clearInterval(timer);
-  }, []);
+    // Jumlah testimoni ikut didaftarkan karena admin bisa menambah atau
+    // menghapus testimoni lewat Studio.
+  }, [testimoni.length]);
 
   const goTo = (index: number) => {
-    setActiveIndex((index + TESTIMONIALS.length) % TESTIMONIALS.length);
+    setActiveIndex((index + testimoni.length) % testimoni.length);
   };
 
-  const active = TESTIMONIALS[activeIndex];
+  const active = testimoni[activeIndex];
 
   return (
     <section className="bg-wood-900 py-24 sm:py-28">
@@ -74,7 +81,7 @@ export function TestimonialSlider() {
             </button>
 
             <div className="flex gap-2">
-              {TESTIMONIALS.map((testimonial, index) => (
+              {testimoni.map((testimonial, index) => (
                 <button
                   key={testimonial.id}
                   type="button"

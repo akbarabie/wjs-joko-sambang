@@ -5,6 +5,11 @@ import { CategoryAccordion } from "@/components/menu/CategoryAccordion";
 import { PackageSection } from "@/components/menu/PackageSection";
 import { WeddingPackageSection } from "@/components/menu/WeddingPackageSection";
 import { MenuCta } from "@/components/menu/MenuCta";
+import {
+  ambilKategoriMenu,
+  ambilMenuBestSeller,
+  ambilPaketMenu,
+} from "@/sanity/lib/konten";
 
 export const metadata: Metadata = {
   title: "Menu & Culinary",
@@ -19,13 +24,22 @@ export const metadata: Metadata = {
   },
 };
 
-export default function MenuPage() {
+// Halaman ini mengambil isinya dari Sanity saat dibangun, lalu meneruskan
+// ke tiap komponen lewat props. Ketiga permintaan dijalankan bersamaan
+// supaya tidak saling menunggu.
+export default async function MenuPage() {
+  const [menu, kategori, daftarPaket] = await Promise.all([
+    ambilMenuBestSeller(),
+    ambilKategoriMenu(),
+    ambilPaketMenu(),
+  ]);
+
   return (
     <>
       <MenuHero />
-      <BestSellerGrid />
-      <CategoryAccordion />
-      <PackageSection />
+      <BestSellerGrid menu={menu} />
+      <CategoryAccordion kategori={kategori} />
+      <PackageSection daftarPaket={daftarPaket} />
       <WeddingPackageSection />
       <MenuCta />
     </>

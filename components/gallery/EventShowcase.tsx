@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { Check } from "lucide-react";
-import { EVENTS } from "@/lib/events-data";
+import type { EventItem } from "@/lib/events-data";
 import { TiltCard } from "@/components/ui/TiltCard";
 import { cn } from "@/lib/utils";
 
@@ -26,7 +26,7 @@ function EventBlock({
   event,
   index,
 }: {
-  event: (typeof EVENTS)[number];
+  event: EventItem;
   index: number;
 }) {
   const [activePhoto, setActivePhoto] = useState(0);
@@ -128,7 +128,8 @@ function EventBlock({
   );
 }
 
-export function EventShowcase() {
+// Daftar event dikirim dari halaman, yang mengambilnya dari Sanity.
+export function EventShowcase({ events }: { events: EventItem[] }) {
   return (
     <section id="event" className="scroll-mt-24 bg-cream-DEFAULT px-6 py-24 sm:py-28">
       <div className="mx-auto max-w-6xl">
@@ -152,7 +153,7 @@ export function EventShowcase() {
         </motion.div>
 
         <div className="mt-16 space-y-20 sm:mt-20 sm:space-y-24">
-          {EVENTS.map((event, index) => (
+          {events.map((event, index) => (
             <EventBlock key={event.id} event={event} index={index} />
           ))}
         </div>
