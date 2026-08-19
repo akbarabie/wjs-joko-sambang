@@ -10,7 +10,10 @@ export const BRAND = {
   philosophy:
     'Nama "Joko Sambang" terinspirasi dari kebersamaan & keramahan khas Jawa. "Sambang" dalam bahasa Jawa berarti berkunjung, melambangkan tempat hangat bagi siapa saja untuk datang, bersantai, berdiskusi, dan melepas penat.',
 } as const;
-
+// Alamat resmi website, dipakai untuk metadata SEO dan Open Graph.
+// Ditulis lengkap dengan https dan www karena Next.js butuh alamat utuh
+// untuk menyusun link preview yang muncul di WhatsApp dan media sosial.
+export const SITE_URL = "https://www.wjs-jokosambang.com";
 export const CONTACT = {
   address: {
     full: "Jl. Trunojoyo Dsn. Rejoso, RT.03/RW.10, Junrejo, Kec. Junrejo, Kota Batu, Jawa Timur 65321",
