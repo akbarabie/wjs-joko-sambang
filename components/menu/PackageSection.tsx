@@ -128,7 +128,7 @@ export function PackageSection({
                       </ul>
 
                       <Link
-                        href={buildWhatsAppLink(pesan)}
+                        href="https://heyzine.com/flip-book/8596b0e7ff.html"
                         target="_blank"
                         rel="noopener noreferrer"
                         className={cn(
@@ -138,7 +138,7 @@ export function PackageSection({
                             : "border border-wood-200 text-wood-700 hover:border-forest-500 hover:bg-forest-500 hover:text-cream-100",
                         )}
                       >
-                        Tanya Paket Ini
+                        Lihat Rincian Paket
                         <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                       </Link>
                     </div>
