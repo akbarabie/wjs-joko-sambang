@@ -7,10 +7,12 @@ import { menuCategory } from "./menuCategory";
 import { menuItem } from "./menuItem";
 import { menuPackage } from "./menuPackage";
 import { promoPopup } from "./promoPopup";
+import { promoSlide } from "./promoSlide";
 import { space } from "./space";
 import { supportFacility } from "./supportFacility";
 import { testimonial } from "./testimonial";
 import { venuePhoto } from "./venuePhoto";
+import { weddingPackage } from "./weddingPackage";
 
 /*
   Daftar jenis konten yang bisa dikelola admin cafe lewat panel Studio.
@@ -21,7 +23,9 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   menuItem,
   menuCategory,
   menuPackage,
+  weddingPackage,
   promoPopup,
+  promoSlide,
   event,
   galleryPhoto,
   testimonial,

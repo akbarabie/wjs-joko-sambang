@@ -38,7 +38,6 @@ import {
   MENU_CATEGORIES,
   MENU_PACKAGES,
 } from "../lib/menu-data.ts";
-import { PROMO_POPUP } from "../lib/promo-data.ts";
 import { TESTIMONIALS } from "../lib/testimonials-data.ts";
 
 const AKAR_PROJECT = path.resolve(import.meta.dirname, "..");
@@ -241,30 +240,61 @@ for (const [urutan, paket] of MENU_PACKAGES.entries()) {
     ...(gambar ? { image: gambar } : {}),
     features: paket.features,
     isHighlighted: paket.isHighlighted ?? false,
+    // Placeholder, isinya link kontak dulu. Ganti ke link brosur asli
+    // masing-masing paket lewat Studio kalau linknya sudah siap.
+    detailHref: paket.detailHref,
     order: urutan + 1,
   });
 }
 
 console.log("Menyiapkan popup promo...");
 {
-  const gambar = await bentukGambar(PROMO_POPUP.image, PROMO_POPUP.alt);
+  // Sejak popup bisa menampung lebih dari satu kartu promo, isi promo
+  // Wedding yang tadinya berdiri sendiri sekarang jadi butir pertama di
+  // dalam daftarPromo. Kalau nanti mau menambah promo lain lewat skrip
+  // ini juga (bukan langsung dari Studio), tinggal tambah butir baru di
+  // array "daftarPromo" di bawah dengan kodePromo dan _key yang beda.
+  const gambar = await bentukGambar(
+    "/images/promo/promo-wedding.jpg",
+    "Flyer Wedding Package WJS Joko Sambang Café",
+  );
   dokumen.push({
     // Id tetap, harus sama dengan ID_DOKUMEN_PROMO di sanity/structure.ts
     // supaya menu Popup Promo di panel admin membuka dokumen yang ini.
     _id: "promoPopupUtama",
     _type: "promoPopup",
-    aktif: PROMO_POPUP.aktif,
-    kodePromo: PROMO_POPUP.id,
-    badge: PROMO_POPUP.badge,
-    title: PROMO_POPUP.title,
-    subtitle: PROMO_POPUP.subtitle,
-    ...(gambar ? { image: gambar } : {}),
-    poin: PROMO_POPUP.poin,
-    ctaLabel: PROMO_POPUP.ctaLabel,
-    ctaHref: PROMO_POPUP.ctaHref,
-    catatan: PROMO_POPUP.catatan,
-    delayMs: PROMO_POPUP.delayMs,
-    jedaTampilJam: PROMO_POPUP.jedaTampilJam,
+    aktif: true,
+    jedaGeserDetik: 5,
+    delayMs: 1400,
+    modeMunculUlang: "jeda",
+    jedaTampilJam: 24,
+    jedaTampilMenit: 0,
+    daftarPromo: [
+      {
+        _type: "promoSlide",
+        _key: "wedding-package-2026",
+        aktif: true,
+        kodePromo: "wedding-package-2026",
+        badge: "Promo Baru",
+        title: "Wedding Package",
+        subtitle:
+          "Rayakan hari bahagia di tengah kebun dan udara sejuk Kota Batu. Tiga pilihan paket dengan venue indoor dan outdoor.",
+        ...(gambar ? { image: gambar } : {}),
+        poin: [
+          "Akses 3 jam area indoor & outdoor",
+          "2 VIP Room, area makeup & ganti gaun",
+          "Free WiFi, parkir luas, dan mic wireless",
+        ],
+        chipHarga: [
+          { _key: "paket-a", kode: "Paket A", harga: "Rp 150.000" },
+          { _key: "paket-b", kode: "Paket B", harga: "Rp 175.000" },
+          { _key: "paket-c", kode: "Paket C", harga: "Rp 200.000" },
+        ],
+        ctaLabel: "Lihat Paket Selengkapnya",
+        ctaHref: "/menu#wedding",
+        catatan: "Minimum pemesanan 200 pax. Harga belum termasuk PPN.",
+      },
+    ],
   });
 }
 

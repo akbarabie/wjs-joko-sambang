@@ -13,6 +13,7 @@ import type { StructureResolver } from "sanity/structure";
 */
 
 const ID_DOKUMEN_PROMO = "promoPopupUtama";
+const ID_DOKUMEN_WEDDING = "weddingPackageUtama";
 
 export const structure: StructureResolver = (S) =>
   S.list()
@@ -27,6 +28,14 @@ export const structure: StructureResolver = (S) =>
               S.documentTypeListItem("menuItem").title("Menu Best Seller"),
               S.documentTypeListItem("menuCategory").title("Kategori Menu"),
               S.documentTypeListItem("menuPackage").title("Paket Menu"),
+              S.listItem()
+                .title("Wedding Package")
+                .child(
+                  S.document()
+                    .schemaType("weddingPackage")
+                    .documentId(ID_DOKUMEN_WEDDING)
+                    .title("Wedding Package"),
+                ),
             ]),
         ),
 

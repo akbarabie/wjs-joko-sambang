@@ -5,11 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowUpRight, Check, Heart, MessageCircle, RotateCcw, Utensils } from "lucide-react";
-import {
-  WEDDING_FACILITIES,
-  WEDDING_PACKAGES,
-  WEDDING_TERMS,
-} from "@/lib/wedding-data";
+import type { WeddingPackageData, WeddingPaket } from "@/lib/wedding-data";
 import { FacilityIcon } from "@/components/facilities/FacilityIcon";
 import { buildWhatsAppLink } from "@/lib/constants";
 import { cn } from "@/lib/utils";
@@ -38,7 +34,7 @@ function WeddingCard({
   paket,
   index,
 }: {
-  paket: (typeof WEDDING_PACKAGES)[number];
+  paket: WeddingPaket;
   index: number;
 }) {
   const [isFlipped, setIsFlipped] = useState(false);
@@ -243,7 +239,21 @@ function WeddingCard({
   );
 }
 
-export function WeddingPackageSection() {
+// Data Wedding Package dikirim dari halaman, yang mengambilnya dari Sanity.
+// Kalau dokumennya belum dibuat admin, atau daftar paketnya masih kosong,
+// section ini tidak ditampilkan sama sekali daripada menampilkan kartu
+// kosong yang membingungkan pengunjung.
+export function WeddingPackageSection({
+  data,
+}: {
+  data: WeddingPackageData | null;
+}) {
+  if (!data || !data.daftarPaket || data.daftarPaket.length === 0) {
+    return null;
+  }
+
+  const { daftarPaket, daftarFasilitas, syarat } = data;
+
   return (
     <section
       id="wedding"
@@ -285,7 +295,7 @@ export function WeddingPackageSection() {
         </motion.div>
 
         <div className="mt-14 grid grid-cols-1 gap-7 lg:grid-cols-3">
-          {WEDDING_PACKAGES.map((paket, index) => (
+          {daftarPaket.map((paket, index) => (
             <WeddingCard key={paket.id} paket={paket} index={index} />
           ))}
         </div>
@@ -308,7 +318,7 @@ export function WeddingPackageSection() {
           </div>
 
           <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {WEDDING_FACILITIES.map((fasilitas, index) => (
+            {daftarFasilitas.map((fasilitas, index) => (
               <motion.div
                 key={fasilitas.label}
                 initial="hidden"
@@ -339,16 +349,16 @@ export function WeddingPackageSection() {
 
           <div className="mt-10 flex flex-col items-center gap-6 border-t border-cream-100/10 pt-8 sm:flex-row sm:justify-between">
             <ul className="flex flex-wrap justify-center gap-x-5 gap-y-2">
-              {WEDDING_TERMS.map((syarat) => (
+              {syarat.map((butirSyarat) => (
                 <li
-                  key={syarat}
+                  key={butirSyarat}
                   className="flex items-center gap-2 text-xs text-cream-200/60"
                 >
                   <span
                     className="h-1 w-1 rounded-full bg-gold-500"
                     aria-hidden="true"
                   />
-                  {syarat}
+                  {butirSyarat}
                 </li>
               ))}
             </ul>

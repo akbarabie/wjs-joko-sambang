@@ -2,11 +2,28 @@ import { defineField, defineType } from "sanity";
 
 /*
   Popup promo yang muncul di halaman depan.
-  Sumber awal: lib/promo-data.ts (PROMO_POPUP).
 
   Dokumen ini dipakai tunggal, artinya cukup ada satu saja. Pengaturannya
   di sanity/structure.ts sudah membuat menu ini langsung membuka satu
-  dokumen, jadi admin tidak bisa membuat promo ganda tanpa sengaja.
+  dokumen, jadi admin tidak bisa membuat popup ganda tanpa sengaja.
+
+  Sejak popup bisa menampilkan lebih dari satu promo sekaligus (misal
+  promo Wedding dan promo Kemerdekaan tampil bergantian), field-field
+  yang dulu ada langsung di sini (badge, title, gambar, dan seterusnya)
+  dipindah ke dalam array "daftarPromo". Tiap butir di array itu adalah
+  satu kartu promo utuh lewat object type promoSlide, jadi gambar,
+  judul, keterangan, dan tombolnya selalu satu paket dan tidak bisa
+  tertukar antar promo.
+
+  Field yang tersisa di level dokumen ini ("aktif", "delayMs",
+  "modeMunculUlang", "jedaTampilJam", "jedaTampilMenit", "jedaGeserDetik")
+  memang berlaku untuk popup secara keseluruhan, bukan untuk satu promo
+  saja.
+
+  Soal "modeMunculUlang": admin bisa pilih popup mengikuti jeda waktu
+  (kombinasi jam dan menit sejak terakhir ditutup), atau selalu tampil
+  lagi setiap pengunjung kembali ke halaman Home tanpa peduli jeda waktu
+  sama sekali.
 */
 export const promoPopup = defineType({
   name: "promoPopup",
@@ -18,79 +35,26 @@ export const promoPopup = defineType({
       title: "Tampilkan Popup",
       type: "boolean",
       description:
-        "Matikan kalau promo sedang tidak berjalan. Popup langsung berhenti muncul tanpa perlu menghapus isinya.",
+        "Saklar utama seluruh popup. Matikan kalau semua promo sedang tidak berjalan. Untuk mematikan satu promo saja tanpa mematikan yang lain, pakai saklar 'Tampilkan Kartu Ini' di masing-masing kartu promo di bawah.",
       initialValue: true,
     }),
     defineField({
-      name: "kodePromo",
-      title: "Kode Promo",
-      type: "string",
-      description:
-        "PENTING: ganti kode ini setiap kali ganti promo, contoh dari wedding-package-2026 jadi promo-natal-2026. Pengunjung yang sudah pernah menutup popup lama akan melihat popup baru. Kalau kodenya tidak diganti, popup baru tidak akan muncul untuk mereka.",
-      validation: (rule) => rule.required(),
-    }),
-    defineField({
-      name: "badge",
-      title: "Label Kecil",
-      type: "string",
-      description: "Tulisan kecil di pojok popup. Contoh: Promo Baru",
-      validation: (rule) => rule.required(),
-    }),
-    defineField({
-      name: "title",
-      title: "Judul Promo",
-      type: "string",
-      validation: (rule) => rule.required(),
-    }),
-    defineField({
-      name: "subtitle",
-      title: "Penjelasan Singkat",
-      type: "text",
-      rows: 3,
-      validation: (rule) => rule.required(),
-    }),
-    defineField({
-      name: "image",
-      title: "Gambar Promo",
-      type: "image",
-      options: { hotspot: true },
-      fields: [
-        defineField({
-          name: "alt",
-          title: "Keterangan Gambar",
-          type: "string",
-        }),
-      ],
-      validation: (rule) => rule.required(),
-    }),
-    defineField({
-      name: "poin",
-      title: "Poin Isi Promo",
+      name: "daftarPromo",
+      title: "Daftar Promo",
       type: "array",
-      of: [{ type: "string" }],
-      description: "Daftar singkat isi promo. Cukup dua sampai empat poin.",
-    }),
-    defineField({
-      name: "ctaLabel",
-      title: "Tulisan Tombol",
-      type: "string",
-      description: "Contoh: Lihat Paket Selengkapnya",
-      validation: (rule) => rule.required(),
-    }),
-    defineField({
-      name: "ctaHref",
-      title: "Tujuan Tombol",
-      type: "string",
       description:
-        "Alamat tujuan saat tombol diklik. Untuk halaman di website ini tulis dengan garis miring di depan, contoh: /menu#wedding",
-      validation: (rule) => rule.required(),
+        "Isi satu atau lebih kartu promo. Kalau lebih dari satu, kartu-kartu ini akan tampil bergantian di dalam popup yang sama. Urutan tampil mengikuti urutan kartu di sini, seret kartu untuk mengubah urutan.",
+      of: [{ type: "promoSlide" }],
+      validation: (rule) => rule.required().min(1),
     }),
     defineField({
-      name: "catatan",
-      title: "Catatan Kecil",
-      type: "string",
+      name: "jedaGeserDetik",
+      title: "Jeda Ganti Promo (detik)",
+      type: "number",
       description:
-        "Tulisan kecil di bagian bawah popup. Contoh: Minimum pemesanan 200 pax.",
+        "Kalau daftar promo berisi lebih dari satu kartu, ini jeda waktu sebelum otomatis pindah ke kartu berikutnya. Tidak berpengaruh kalau hanya ada satu kartu promo.",
+      initialValue: 5,
+      validation: (rule) => rule.required().min(3).max(30),
     }),
     defineField({
       name: "delayMs",
@@ -102,22 +66,55 @@ export const promoPopup = defineType({
       validation: (rule) => rule.required().min(0).max(10000),
     }),
     defineField({
+      name: "modeMunculUlang",
+      title: "Aturan Muncul Ulang",
+      type: "string",
+      description:
+        "Tentukan kapan popup boleh muncul lagi untuk pengunjung yang sama setelah mereka menutupnya.",
+      options: {
+        list: [
+          { title: "Jeda waktu tertentu (jam & menit)", value: "jeda" },
+          { title: "Setiap kunjungan ke Home", value: "setiapKunjungan" },
+        ],
+        layout: "radio",
+      },
+      initialValue: "jeda",
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
       name: "jedaTampilJam",
-      title: "Jeda Muncul Lagi (jam)",
+      title: "Jeda Muncul Lagi - Jam",
       type: "number",
       description:
-        "Setelah pengunjung menutup popup, berapa jam sebelum popup boleh muncul lagi untuk orang yang sama. Isi 24 berarti sehari sekali.",
+        "Bagian jam dari jeda muncul ulang. Contoh isi 1 untuk 1 jam. Cuma dipakai kalau Aturan Muncul Ulang di atas dipilih 'Jeda waktu tertentu'.",
       initialValue: 24,
-      validation: (rule) => rule.required().min(0),
+      hidden: ({ parent }) =>
+        (parent as { modeMunculUlang?: string } | undefined)
+          ?.modeMunculUlang !== "jeda",
+      validation: (rule) => rule.min(0).max(999),
+    }),
+    defineField({
+      name: "jedaTampilMenit",
+      title: "Jeda Muncul Lagi - Menit",
+      type: "number",
+      description:
+        "Bagian menit dari jeda muncul ulang, isi 0 sampai 59. Contoh: Jam diisi 0 dan Menit diisi 30 berarti popup boleh muncul lagi setelah setengah jam.",
+      initialValue: 0,
+      hidden: ({ parent }) =>
+        (parent as { modeMunculUlang?: string } | undefined)
+          ?.modeMunculUlang !== "jeda",
+      validation: (rule) => rule.min(0).max(59),
     }),
   ],
   preview: {
-    select: { title: "title", aktif: "aktif", media: "image" },
-    prepare({ title, aktif, media }) {
+    select: { aktif: "aktif", daftarPromo: "daftarPromo" },
+    prepare({ aktif, daftarPromo }) {
+      const jumlah = Array.isArray(daftarPromo) ? daftarPromo.length : 0;
       return {
-        title: title || "Popup Promo",
-        subtitle: aktif ? "Sedang tampil di website" : "Sedang dimatikan",
-        media,
+        title: "Popup Promo",
+        subtitle: aktif
+          ? `Sedang tampil, ${jumlah} kartu promo`
+          : "Sedang dimatikan",
       };
     },
   },

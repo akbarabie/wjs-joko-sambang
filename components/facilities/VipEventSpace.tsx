@@ -1,9 +1,10 @@
 "use client";
 
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowUpRight, Users } from "lucide-react";
+import { ArrowUpRight, ChevronLeft, ChevronRight, Users } from "lucide-react";
 import type { SpaceItem } from "@/lib/facilities-data";
 import { FacilityIcon } from "@/components/facilities/FacilityIcon";
 import { TiltCard } from "@/components/ui/TiltCard";
@@ -18,8 +19,56 @@ const fadeUp = {
   }),
 };
 
+// Toleransi (px) supaya tombol panah tidak berkedip nyala-mati persis di
+// ujung akibat pembulatan angka scroll browser.
+const TOLERANSI_UJUNG = 8;
+
 // Daftar ruang privat dikirim dari halaman, yang mengambilnya dari Sanity.
+//
+// Dulu section ini pakai grid 2 kolom tetap, cukup untuk dua ruang. Sekarang
+// jumlah ruang VIP dan Event Space bisa terus bertambah dari Studio, jadi
+// tampilannya diubah jadi baris yang bisa digeser ke samping. Ukuran tiap
+// kartu tetap proporsional berapa pun jumlah ruangnya, kelebihannya tinggal
+// digeser, bukan bikin kartu menyusut atau section jadi sangat panjang ke
+// bawah.
 export function VipEventSpace({ ruang }: { ruang: SpaceItem[] }) {
+  const trekRef = useRef<HTMLDivElement>(null);
+  const [bisaKeKiri, setBisaKeKiri] = useState(false);
+  const [bisaKeKanan, setBisaKeKanan] = useState(false);
+
+  const perbaruiStatusPanah = useCallback(() => {
+    const trek = trekRef.current;
+    if (!trek) return;
+    setBisaKeKiri(trek.scrollLeft > TOLERANSI_UJUNG);
+    setBisaKeKanan(
+      trek.scrollLeft + trek.clientWidth < trek.scrollWidth - TOLERANSI_UJUNG,
+    );
+  }, []);
+
+  useEffect(() => {
+    perbaruiStatusPanah();
+    window.addEventListener("resize", perbaruiStatusPanah);
+    return () => window.removeEventListener("resize", perbaruiStatusPanah);
+    // ruang.length ikut didaftarkan supaya status panah dihitung ulang
+    // begitu admin menambah atau mengurangi ruang dari Studio.
+  }, [perbaruiStatusPanah, ruang.length]);
+
+  function geser(arah: "kiri" | "kanan") {
+    const trek = trekRef.current;
+    if (!trek) return;
+
+    const kartuPertama = trek.querySelector<HTMLElement>("[data-kartu-ruang]");
+    const celah = parseFloat(window.getComputedStyle(trek).columnGap || "0");
+    const lebarGeser = kartuPertama
+      ? kartuPertama.offsetWidth + celah
+      : trek.clientWidth * 0.85;
+
+    trek.scrollBy({
+      left: arah === "kanan" ? lebarGeser : -lebarGeser,
+      behavior: "smooth",
+    });
+  }
+
   return (
     <section
       id="vip-event"
@@ -45,18 +94,24 @@ export function VipEventSpace({ ruang }: { ruang: SpaceItem[] }) {
           </p>
         </motion.div>
 
-        <div className="mt-14 grid grid-cols-1 gap-8 lg:grid-cols-2">
+        <div
+          ref={trekRef}
+          onScroll={perbaruiStatusPanah}
+          className="scrollbar-hide mt-14 flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth pb-2 sm:gap-8"
+        >
           {ruang.map((space, index) => {
             const waMessage = `Halo WJS Joko Sambang Café, saya ingin menanyakan ketersediaan ${space.name} beserta paket harganya.`;
 
             return (
               <motion.div
                 key={space.id}
+                data-kartu-ruang
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, amount: 0.2 }}
                 variants={fadeUp}
-                custom={index * 0.15}
+                custom={index * 0.12}
+                className="w-[82vw] shrink-0 snap-start sm:w-[400px] lg:w-[460px]"
               >
                 <TiltCard maxTilt={6} className="h-full">
                   <div className="flex h-full flex-col overflow-hidden rounded-[2rem] border border-cream-100/10 bg-wood-800/80 shadow-2xl shadow-wood-950/40">
@@ -65,7 +120,7 @@ export function VipEventSpace({ ruang }: { ruang: SpaceItem[] }) {
                         src={space.images[0].src}
                         alt={space.images[0].alt}
                         fill
-                        sizes="(max-width: 1024px) 100vw, 50vw"
+                        sizes="(max-width: 640px) 82vw, (max-width: 1024px) 400px, 460px"
                         className="object-cover"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-wood-950/85 via-wood-950/20 to-transparent" />
@@ -137,6 +192,33 @@ export function VipEventSpace({ ruang }: { ruang: SpaceItem[] }) {
             );
           })}
         </div>
+
+        {/* Tombol navigasi cukup ikon panah, muncul kalau ruangnya lebih
+            dari satu. Nonaktif otomatis (jadi transparan) begitu sudah
+            mentok di ujung kiri atau kanan, jadi tidak perlu titik
+            indikator tambahan yang bikin ramai. */}
+        {ruang.length > 1 ? (
+          <div className="mt-8 flex items-center justify-center gap-4">
+            <button
+              type="button"
+              onClick={() => geser("kiri")}
+              disabled={!bisaKeKiri}
+              aria-label="Lihat ruang sebelumnya"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-cream-100/20 text-cream-100 transition-colors hover:border-gold-500 hover:bg-gold-500 hover:text-wood-900 disabled:pointer-events-none disabled:opacity-25"
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+            <button
+              type="button"
+              onClick={() => geser("kanan")}
+              disabled={!bisaKeKanan}
+              aria-label="Lihat ruang berikutnya"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-cream-100/20 text-cream-100 transition-colors hover:border-gold-500 hover:bg-gold-500 hover:text-wood-900 disabled:pointer-events-none disabled:opacity-25"
+            >
+              <ChevronRight className="h-5 w-5" />
+            </button>
+          </div>
+        ) : null}
       </div>
     </section>
   );

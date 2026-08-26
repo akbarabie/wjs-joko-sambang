@@ -6,7 +6,6 @@ import { motion } from "framer-motion";
 import { ArrowUpRight, Check, Star } from "lucide-react";
 import type { MenuPackage } from "@/lib/menu-data";
 import { TiltCard } from "@/components/ui/TiltCard";
-import { buildWhatsAppLink } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
 const fadeUp = {
@@ -48,8 +47,6 @@ export function PackageSection({
 
         <div className="mt-14 grid grid-cols-1 gap-7 lg:grid-cols-3">
           {daftarPaket.map((paket, index) => {
-            const pesan = `Halo WJS Joko Sambang Café, saya ingin menanyakan detail ${paket.name} beserta pilihan menunya.`;
-
             return (
               <motion.div
                 key={paket.id}
@@ -128,7 +125,7 @@ export function PackageSection({
                       </ul>
 
                       <Link
-                        href="https://heyzine.com/flip-book/8596b0e7ff.html"
+                        href={paket.detailHref}
                         target="_blank"
                         rel="noopener noreferrer"
                         className={cn(

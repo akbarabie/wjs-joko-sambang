@@ -9,6 +9,7 @@ import {
   ambilKategoriMenu,
   ambilMenuBestSeller,
   ambilPaketMenu,
+  ambilWeddingPackage,
 } from "@/sanity/lib/konten";
 
 export const metadata: Metadata = {
@@ -28,10 +29,11 @@ export const metadata: Metadata = {
 // ke tiap komponen lewat props. Ketiga permintaan dijalankan bersamaan
 // supaya tidak saling menunggu.
 export default async function MenuPage() {
-  const [menu, kategori, daftarPaket] = await Promise.all([
+  const [menu, kategori, daftarPaket, weddingPackage] = await Promise.all([
     ambilMenuBestSeller(),
     ambilKategoriMenu(),
     ambilPaketMenu(),
+    ambilWeddingPackage(),
   ]);
 
   return (
@@ -40,7 +42,7 @@ export default async function MenuPage() {
       <BestSellerGrid menu={menu} />
       <CategoryAccordion kategori={kategori} />
       <PackageSection daftarPaket={daftarPaket} />
-      <WeddingPackageSection />
+      <WeddingPackageSection data={weddingPackage} />
       <MenuCta />
     </>
   );

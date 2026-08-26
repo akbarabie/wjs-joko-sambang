@@ -107,3 +107,15 @@ h4,
     display: none;
   }
 }
+
+/* Sembunyikan scrollbar di carousel geser (VIP & Event Space, dan carousel
+   lain yang serupa), geser tetap jalan normal lewat mouse, trackpad, atau
+   swipe di HP, cuma garis scrollbar-nya saja yang disembunyikan biar
+   tampilannya tetap bersih dan modern. */
+.scrollbar-hide {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Edge lama, IE */
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge baru */
+}

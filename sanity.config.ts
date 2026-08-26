@@ -23,10 +23,15 @@ export default defineConfig({
     types: schemaTypes,
   },
   document: {
-    // Popup Promo sengaja tidak muncul di tombol buat dokumen baru, karena
-    // dokumennya memang tunggal dan sudah punya menu sendiri di sisi kiri.
+    // Popup Promo dan Wedding Package sengaja tidak muncul di tombol buat
+    // dokumen baru, karena dokumennya memang tunggal dan sudah punya menu
+    // sendiri di sisi kiri.
     newDocumentOptions: (templates) =>
-      templates.filter((template) => template.templateId !== "promoPopup"),
+      templates.filter(
+        (template) =>
+          template.templateId !== "promoPopup" &&
+          template.templateId !== "weddingPackage",
+      ),
   },
   plugins: [
     // Panel utama tempat admin menambah dan mengubah konten.

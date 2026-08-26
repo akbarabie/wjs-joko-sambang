@@ -180,6 +180,8 @@ export type MenuPackage = {
   features: string[];
   /** Paket yang ingin ditonjolkan tampil dengan aksen berbeda. */
   isHighlighted?: boolean;
+  /** Link brosur/detail khusus paket ini, beda-beda tiap paket. */
+  detailHref: string;
 };
 
 export const MENU_PACKAGES: MenuPackage[] = [
@@ -194,6 +196,7 @@ export const MENU_PACKAGES: MenuPackage[] = [
     alt: "Meja prasmanan dengan beberapa wadah pemanas makanan",
     features: ["Cocok untuk acara besar", "Susunan menu fleksibel", "Bisa digabung sewa event space"],
     isHighlighted: true,
+    detailHref: "/contact",
   },
   {
     id: "meal-box",
@@ -205,6 +208,7 @@ export const MENU_PACKAGES: MenuPackage[] = [
     image: "/images/menu/menu-package-mealbox.jpeg",
     alt: "Meal box berisi nasi, lauk, dan sayuran",
     features: ["Praktis untuk rapat", "Porsi per orang", "Bisa diantar sesuai kesepakatan"],
+    detailHref: "/contact",
   },
   {
     id: "ala-carte",
@@ -216,5 +220,6 @@ export const MENU_PACKAGES: MenuPackage[] = [
     image: "/images/menu/menu-package-alacarte.jpeg",
     alt: "Beberapa piring hidangan tersaji di atas meja",
     features: ["Pesan satuan", "Tanpa minimum jumlah", "Tersedia setiap hari"],
+    detailHref: "/contact",
   },
 ];

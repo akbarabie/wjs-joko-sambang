@@ -9,6 +9,7 @@ import type {
 import type { MenuCategoryItem, MenuItem, MenuPackage } from "@/lib/menu-data";
 import type { PromoPopupData } from "@/lib/promo-data";
 import type { Testimonial } from "@/lib/testimonials-data";
+import type { WeddingPackageData } from "@/lib/wedding-data";
 
 import { client } from "./client";
 import {
@@ -23,6 +24,7 @@ import {
   querySupportFacilities,
   queryTestimonials,
   queryVenuePhotos,
+  queryWeddingPackage,
 } from "./queries";
 
 /*
@@ -59,6 +61,14 @@ export function ambilKategoriMenu() {
 
 export function ambilPaketMenu() {
   return client.fetch<MenuPackage[]>(queryPaketMenu, {}, OPSI_AMBIL);
+}
+
+export function ambilWeddingPackage() {
+  return client.fetch<WeddingPackageData | null>(
+    queryWeddingPackage,
+    {},
+    OPSI_AMBIL,
+  );
 }
 
 export function ambilPromoPopup() {

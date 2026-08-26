@@ -49,7 +49,27 @@ export const queryPaketMenu = `
     "image": image.asset->url,
     "alt": coalesce(image.alt, name),
     "features": coalesce(features, []),
-    isHighlighted
+    isHighlighted,
+    "detailHref": coalesce(detailHref, "/contact")
+  }
+`;
+
+export const queryWeddingPackage = `
+  *[_type == "weddingPackage"][0] {
+    "daftarPaket": coalesce(daftarPaket[] {
+      "id": kode,
+      kode,
+      name,
+      price,
+      unit,
+      "komposisi": coalesce(komposisi, []),
+      "hidangan": coalesce(hidangan, []),
+      "image": image.asset->url,
+      "alt": coalesce(image.alt, name),
+      isHighlighted
+    }, []),
+    "daftarFasilitas": coalesce(daftarFasilitas, []),
+    "syarat": coalesce(syarat, [])
   }
 `;
 
@@ -60,18 +80,23 @@ export const queryPaketMenu = `
 export const queryPromoPopup = `
   *[_type == "promoPopup"][0] {
     aktif,
-    "id": kodePromo,
-    badge,
-    title,
-    subtitle,
-    "image": image.asset->url,
-    "alt": coalesce(image.alt, title),
-    "poin": coalesce(poin, []),
-    ctaLabel,
-    ctaHref,
-    catatan,
     delayMs,
-    jedaTampilJam
+    "modeMunculUlang": coalesce(modeMunculUlang, "jeda"),
+    "jedaTampilMs": (coalesce(jedaTampilJam, 0) * 3600000) + (coalesce(jedaTampilMenit, 0) * 60000),
+    "jedaGeserMs": jedaGeserDetik * 1000,
+    "daftarPromo": coalesce(daftarPromo[aktif == true] {
+      "id": kodePromo,
+      badge,
+      title,
+      subtitle,
+      "image": image.asset->url,
+      "alt": coalesce(image.alt, title),
+      "poin": coalesce(poin, []),
+      "chipHarga": coalesce(chipHarga, []),
+      ctaLabel,
+      ctaHref,
+      catatan
+    }, [])
   }
 `;
 

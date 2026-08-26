@@ -3,11 +3,8 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { MapPin} from "lucide-react";
-import { CONTACT, buildWhatsAppLink } from "@/lib/constants";
+import { CONTACT } from "@/lib/constants";
 import { WhatsAppIcon } from "@/components/ui/WhatsAppIcon";
-
-const RESERVATION_MESSAGE =
-  "Halo WJS Joko Sambang Café, saya ingin reservasi tempat. Boleh dibantu info ketersediaan area dan paket menunya?";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 28 },
@@ -52,9 +49,7 @@ export function FacilitiesCta() {
 
         <div className="mt-10 flex flex-col justify-center gap-3 sm:flex-row">
           <Link
-            href={buildWhatsAppLink(RESERVATION_MESSAGE)}
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/contact"
             className="inline-flex items-center justify-center gap-2 rounded-full bg-gold-500 px-7 py-3.5 text-sm font-semibold text-wood-900 transition-transform hover:scale-[1.03] hover:bg-gold-400"
           >
             <WhatsAppIcon className="h-4 w-4" />

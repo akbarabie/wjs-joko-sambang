@@ -11,7 +11,9 @@ import { defineArrayMember, defineField, defineType } from "sanity";
 
 // Pilihan ikon kecil yang mendampingi tiap fasilitas. Nilainya harus sama
 // dengan daftar di lib/facilities-data.ts supaya ikonnya ketemu saat tampil.
-const PILIHAN_IKON = [
+// Diekspor supaya bisa dipakai ulang di schema lain yang juga butuh ikon
+// fasilitas, misalnya weddingPackage.ts, jadi daftarnya tidak dobel ditulis.
+export const PILIHAN_IKON = [
   { title: "Kursi / sofa", value: "armchair" },
   { title: "AC / sejuk", value: "snowflake" },
   { title: "WiFi", value: "wifi" },

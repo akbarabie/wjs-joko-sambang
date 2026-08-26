@@ -6,29 +6,39 @@ import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, Check, Sparkles, X } from "lucide-react";
 import type { PromoPopupData } from "@/lib/promo-data";
-import { WEDDING_PACKAGES } from "@/lib/wedding-data";
 
 const STORAGE_PREFIX = "wjs-promo-";
+const JEDA_GESER_BAWAAN_MS = 5000;
 
 // Isi promo dikirim dari halaman, yang mengambilnya dari Sanity.
 //
 // Dipecah jadi dua bagian dengan sengaja. Pembungkus di bawah ini yang
-// memeriksa apakah promonya ada. Kalau dokumen promo belum dibuat atau
-// dihapus dari Studio, popup langsung tidak dirender sama sekali. Isi
-// komponennya baru dijalankan setelah datanya dipastikan ada, supaya
-// pemeriksaan riwayat tutup popup di dalamnya tidak perlu ikut memikirkan
+// memeriksa apakah popup dan setidaknya satu kartu promo memang ada.
+// Kalau dokumen promo belum dibuat, dimatikan, atau daftar promonya
+// kosong, popup langsung tidak dirender sama sekali. Isi komponennya
+// baru dijalankan setelah datanya dipastikan ada, supaya pemeriksaan
+// riwayat tutup popup di dalamnya tidak perlu ikut memikirkan
 // kemungkinan data kosong.
 export function PromoPopup({ promo }: { promo: PromoPopupData | null }) {
-  if (!promo) return null;
+  if (!promo || !promo.aktif) return null;
+  if (!promo.daftarPromo || promo.daftarPromo.length === 0) return null;
   return <PromoPopupIsi promo={promo} />;
 }
 
 function PromoPopupIsi({ promo }: { promo: PromoPopupData }) {
-  const PROMO_POPUP = promo;
+  const daftarPromo = promo.daftarPromo;
+  const adaLebihDariSatu = daftarPromo.length > 1;
+
   const [isOpen, setIsOpen] = useState(false);
+  const [slideAktif, setSlideAktif] = useState(0);
+  const [dijedaHover, setDijedaHover] = useState(false);
   const prefersReducedMotion = useReducedMotion();
 
-  const storageKey = `${STORAGE_PREFIX}${PROMO_POPUP.id}`;
+  // Kunci penyimpanan digabung dari semua kode promo yang sedang aktif.
+  // Jadi kalau admin mengganti salah satu promo, menambah, atau
+  // menghapus kartu, gabungan kodenya ikut berubah dan popup akan
+  // muncul lagi untuk pengunjung yang sudah pernah menutup versi lama.
+  const storageKey = `${STORAGE_PREFIX}${daftarPromo.map((slide) => slide.id).join("-")}`;
 
   const tutup = useCallback(() => {
     setIsOpen(false);
@@ -40,32 +50,31 @@ function PromoPopupIsi({ promo }: { promo: PromoPopupData }) {
   }, [storageKey]);
 
   useEffect(() => {
-    if (!PROMO_POPUP.aktif) return;
-
     let bolehTampil = true;
-    try {
-      const terakhirDitutup = window.localStorage.getItem(storageKey);
-      if (terakhirDitutup) {
-        const selisihJam =
-          (Date.now() - Number(terakhirDitutup)) / (1000 * 60 * 60);
-        bolehTampil = selisihJam >= PROMO_POPUP.jedaTampilJam;
+
+    // Mode "setiap kunjungan" sengaja melewati pengecekan riwayat tutup
+    // di localStorage sama sekali, jadi popup selalu muncul lagi setiap
+    // kali pengunjung membuka halaman Home, tidak peduli kapan terakhir
+    // ditutup.
+    if (promo.modeMunculUlang !== "setiapKunjungan") {
+      try {
+        const terakhirDitutup = window.localStorage.getItem(storageKey);
+        if (terakhirDitutup) {
+          const selisihMs = Date.now() - Number(terakhirDitutup);
+          bolehTampil = selisihMs >= promo.jedaTampilMs;
+        }
+      } catch {
+        bolehTampil = true;
       }
-    } catch {
-      bolehTampil = true;
     }
 
     if (!bolehTampil) return;
 
-    const timer = window.setTimeout(() => setIsOpen(true), PROMO_POPUP.delayMs);
+    const timer = window.setTimeout(() => setIsOpen(true), promo.delayMs);
     return () => window.clearTimeout(timer);
-    // Nilai promo ikut didaftarkan karena sekarang datangnya dari Sanity dan
-    // bisa berubah, tidak lagi berupa nilai tetap seperti waktu masih di file.
-  }, [
-    storageKey,
-    PROMO_POPUP.aktif,
-    PROMO_POPUP.delayMs,
-    PROMO_POPUP.jedaTampilJam,
-  ]);
+    // Nilai promo ikut didaftarkan karena datangnya dari Sanity dan bisa
+    // berubah kapan saja lewat Studio, tidak lagi berupa nilai tetap.
+  }, [storageKey, promo.delayMs, promo.jedaTampilMs, promo.modeMunculUlang]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -84,7 +93,25 @@ function PromoPopupIsi({ promo }: { promo: PromoPopupData }) {
     };
   }, [isOpen, tutup]);
 
-  if (!PROMO_POPUP.aktif) return null;
+  // Geser otomatis ke kartu promo berikutnya setiap beberapa detik.
+  // Berhenti sejenak saat kursor sedang di atas popup, supaya pengunjung
+  // yang lagi baca tidak keburu terlempar ke kartu lain.
+  useEffect(() => {
+    if (!isOpen || !adaLebihDariSatu || dijedaHover) return;
+
+    const jeda =
+      promo.jedaGeserMs && promo.jedaGeserMs >= 1000
+        ? promo.jedaGeserMs
+        : JEDA_GESER_BAWAAN_MS;
+
+    const timer = window.setInterval(() => {
+      setSlideAktif((sebelumnya) => (sebelumnya + 1) % daftarPromo.length);
+    }, jeda);
+
+    return () => window.clearInterval(timer);
+  }, [isOpen, adaLebihDariSatu, dijedaHover, daftarPromo.length, promo.jedaGeserMs]);
+
+  const slide = daftarPromo[slideAktif] ?? daftarPromo[0];
 
   return (
     <AnimatePresence>
@@ -98,6 +125,8 @@ function PromoPopupIsi({ promo }: { promo: PromoPopupData }) {
           aria-modal="true"
           aria-labelledby="judul-promo"
           onClick={tutup}
+          onMouseEnter={() => setDijedaHover(true)}
+          onMouseLeave={() => setDijedaHover(false)}
           className="fixed inset-0 z-[70] flex items-center justify-center bg-wood-950/85 p-4 backdrop-blur-sm sm:p-8"
         >
           {/* Tombol Tutup */}
@@ -125,94 +154,138 @@ function PromoPopupIsi({ promo }: { promo: PromoPopupData }) {
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
             onClick={(event) => event.stopPropagation()}
             style={{ transformStyle: "preserve-3d", perspective: 1200 }}
-            className="relative max-h-[86dvh] w-full max-w-3xl overflow-y-auto overscroll-contain rounded-[1.75rem] bg-wood-900 shadow-2xl shadow-wood-950/60 sm:rounded-[2rem]"
+            className="scrollbar-hide relative max-h-[86dvh] w-full max-w-3xl overflow-y-auto overscroll-contain rounded-[1.75rem] bg-wood-900 shadow-2xl shadow-wood-950/60 sm:rounded-[2rem]"
           >
             <div className="grid grid-cols-1 sm:grid-cols-[1fr_1.1fr]">
               {/* Kolom Gambar Promo (Background Transparan & Ukuran Pas) */}
-              <div className="relative flex min-h-[380px] w-full items-center justify-center p-3 sm:min-h-[500px] sm:p-6">
-                <div className="relative h-full w-full">
-                  <Image
-                    src={PROMO_POPUP.image}
-                    alt={PROMO_POPUP.alt}
-                    fill
-                    sizes="(max-width: 640px) 100vw, 45vw"
-                    className="object-contain drop-shadow-[0_20px_35px_rgba(0,0,0,0.55)]"
-                    priority
-                  />
-                </div>
+              <div className="relative flex min-h-[380px] w-full items-center justify-center overflow-hidden p-3 sm:min-h-[500px] sm:p-6">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={slide.id}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.4, ease: "easeOut" }}
+                    className="relative h-full w-full"
+                  >
+                    <Image
+                      src={slide.image}
+                      alt={slide.alt}
+                      fill
+                      sizes="(max-width: 640px) 100vw, 45vw"
+                      className="object-contain drop-shadow-[0_20px_35px_rgba(0,0,0,0.55)]"
+                      priority
+                    />
+                  </motion.div>
+                </AnimatePresence>
               </div>
 
               {/* Kolom Teks Informasi */}
-              <div className="flex flex-col justify-center p-6 sm:p-9">
-                <span
-                  style={{ transform: "translateZ(40px)" }}
-                  className="inline-flex w-fit items-center gap-2 rounded-full bg-gold-500 px-4 py-1.5 text-[0.65rem] font-bold uppercase tracking-[0.2em] text-wood-900"
-                >
-                  <Sparkles className="h-3 w-3" aria-hidden="true" />
-                  {PROMO_POPUP.badge}
-                </span>
-
-                <h2
-                  id="judul-promo"
-                  className="font-heading mt-5 text-3xl font-semibold text-cream-100 sm:text-4xl"
-                >
-                  {PROMO_POPUP.title}
-                </h2>
-
-                <p className="mt-3 text-sm leading-relaxed text-cream-200/75">
-                  {PROMO_POPUP.subtitle}
-                </p>
-
-                {/* Ringkasan Harga Paket */}
-                <div className="mt-6 flex flex-wrap gap-2">
-                  {WEDDING_PACKAGES.map((paket) => (
-                    <div
-                      key={paket.id}
-                      className="rounded-xl border border-cream-100/15 bg-cream-100/5 px-3.5 py-2"
+              <div className="flex flex-col justify-center overflow-hidden p-6 sm:p-9">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={slide.id}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.35, ease: "easeOut" }}
+                  >
+                    <span
+                      style={{ transform: "translateZ(40px)" }}
+                      className="inline-flex w-fit items-center gap-2 rounded-full bg-gold-500 px-4 py-1.5 text-[0.65rem] font-bold uppercase tracking-[0.2em] text-wood-900"
                     >
-                      <p className="text-[0.6rem] font-semibold uppercase tracking-[0.15em] text-gold-400">
-                        Paket {paket.kode}
-                      </p>
-                      <p className="mt-0.5 text-sm font-semibold text-cream-100">
-                        {paket.price}
+                      <Sparkles className="h-3 w-3" aria-hidden="true" />
+                      {slide.badge}
+                    </span>
+
+                    <h2
+                      id="judul-promo"
+                      className="font-heading mt-5 text-3xl font-semibold text-cream-100 sm:text-4xl"
+                    >
+                      {slide.title}
+                    </h2>
+
+                    <p className="mt-3 text-sm leading-relaxed text-cream-200/75">
+                      {slide.subtitle}
+                    </p>
+
+                    {/* Ringkasan Harga, tampil hanya kalau promonya memang punya rincian harga */}
+                    {slide.chipHarga.length > 0 ? (
+                      <div className="mt-6 flex flex-wrap gap-2">
+                        {slide.chipHarga.map((chip) => (
+                          <div
+                            key={chip.kode}
+                            className="rounded-xl border border-cream-100/15 bg-cream-100/5 px-3.5 py-2"
+                          >
+                            <p className="text-[0.6rem] font-semibold uppercase tracking-[0.15em] text-gold-400">
+                              {chip.kode}
+                            </p>
+                            <p className="mt-0.5 text-sm font-semibold text-cream-100">
+                              {chip.harga}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    ) : null}
+
+                    {/* Poin Benefit */}
+                    {slide.poin.length > 0 ? (
+                      <ul className="mt-6 space-y-2">
+                        {slide.poin.map((poin) => (
+                          <li key={poin} className="flex items-start gap-2.5">
+                            <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-gold-500/20">
+                              <Check className="h-2.5 w-2.5 text-gold-400" aria-hidden="true" />
+                            </span>
+                            <span className="text-xs text-cream-200/70">{poin}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
+
+                    {/* Tombol Aksi Sticky */}
+                    <div className="sticky bottom-0 mt-7 bg-wood-900 pb-1 pt-3">
+                      <Link
+                        href={slide.ctaHref}
+                        onClick={tutup}
+                        className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-gold-500 px-6 py-3.5 text-sm font-semibold text-wood-900 transition-colors hover:bg-gold-400"
+                      >
+                        {slide.ctaLabel}
+                        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                      </Link>
+
+                      {slide.catatan ? (
+                        <p className="mt-3 text-center text-[0.65rem] leading-relaxed text-cream-200/45">
+                          {slide.catatan}
+                        </p>
+                      ) : null}
+                      <p className="mt-1 text-center text-[0.65rem] text-cream-200/35">
+                        Ketuk di luar kotak ini untuk menutup
                       </p>
                     </div>
-                  ))}
-                </div>
-
-                {/* Poin Benefit */}
-                <ul className="mt-6 space-y-2">
-                  {PROMO_POPUP.poin.map((poin) => (
-                    <li key={poin} className="flex items-start gap-2.5">
-                      <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-gold-500/20">
-                        <Check className="h-2.5 w-2.5 text-gold-400" aria-hidden="true" />
-                      </span>
-                      <span className="text-xs text-cream-200/70">{poin}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                {/* Tombol Aksi Sticky */}
-                <div className="sticky bottom-0 mt-7 bg-wood-900 pb-1 pt-3">
-                  <Link
-                    href={PROMO_POPUP.ctaHref}
-                    onClick={tutup}
-                    className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-gold-500 px-6 py-3.5 text-sm font-semibold text-wood-900 transition-colors hover:bg-gold-400"
-                  >
-                    {PROMO_POPUP.ctaLabel}
-                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </Link>
-
-                  <p className="mt-3 text-center text-[0.65rem] leading-relaxed text-cream-200/45">
-                    {PROMO_POPUP.catatan}
-                  </p>
-                  <p className="mt-1 text-center text-[0.65rem] text-cream-200/35">
-                    Ketuk di luar kotak ini untuk menutup
-                  </p>
-                </div>
+                  </motion.div>
+                </AnimatePresence>
               </div>
-
             </div>
+
+            {/* Indikator Titik, tampil hanya kalau promonya lebih dari satu */}
+            {adaLebihDariSatu ? (
+              <div className="flex items-center justify-center gap-2 pb-5 pt-1 sm:pb-6">
+                {daftarPromo.map((item, index) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => setSlideAktif(index)}
+                    aria-label={`Lihat promo ${item.title}`}
+                    aria-current={index === slideAktif}
+                    className={`h-1.5 rounded-full transition-all ${
+                      index === slideAktif
+                        ? "w-6 bg-gold-500"
+                        : "w-1.5 bg-cream-100/25 hover:bg-cream-100/40"
+                    }`}
+                  />
+                ))}
+              </div>
+            ) : null}
           </motion.div>
         </motion.div>
       ) : null}

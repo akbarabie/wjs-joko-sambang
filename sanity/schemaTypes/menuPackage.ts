@@ -3,6 +3,10 @@ import { defineField, defineType } from "sanity";
 /*
   Paket harga yang tampil di halaman Menu.
   Sumber awal: lib/menu-data.ts (MENU_PACKAGES).
+
+  Field detailHref sengaja dibuat wajib diisi karena tiap paket memang
+  punya brosur/katalog sendiri-sendiri, bukan link yang sama untuk semua
+  paket seperti sebelumnya.
 */
 export const menuPackage = defineType({
   name: "menuPackage",
@@ -75,6 +79,15 @@ export const menuPackage = defineType({
       description:
         "Kalau dinyalakan, paket ini tampil dengan aksen berbeda supaya lebih menarik perhatian. Sebaiknya cukup satu paket saja yang dinyalakan.",
       initialValue: false,
+    }),
+    defineField({
+      name: "detailHref",
+      title: "Link Brosur / Detail Paket",
+      type: "url",
+      description:
+        "Alamat lengkap halaman brosur atau katalog khusus paket ini, beda-beda untuk tiap paket. Tulis lengkap dengan https:// di depan.",
+      validation: (rule) =>
+        rule.required().uri({ scheme: ["http", "https"] }),
     }),
     defineField({
       name: "order",
